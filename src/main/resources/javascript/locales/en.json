@@ -1,6 +1,6 @@
 {
-  "label": "security.txt",
   "label": {
+    "menu_entry": "security.txt",
     "contact": "Security contact address",
     "encryption": "PGP key file",
     "acknowledgements": "Acknowledgements page",

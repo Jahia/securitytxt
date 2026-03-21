@@ -23,7 +23,7 @@ export default () => {
         icon: window.jahia.moonstone.toIconComponent('FileText'),
         targets: ['administration-sites:999'],
         requiredPermission: 'siteAdminSecurityTxt',
-        label: 'securitytxt:label',
+        label: 'securitytxt:label.menu_entry',
         isSelectable: true,
         render: () => React.createElement(SecurityTxtSettingsRoute)
     });
