@@ -1,4 +1,4 @@
-package org.jahia.modules.securitytxt.taglibs;
+package org.jahia.community.securitytxt.taglibs;
 
 import java.io.IOException;
 import java.io.InputStream;

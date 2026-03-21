@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.4" version="1" serialNumber="urn:uuid:d301fc97-1650-43f8-8598-378003a87ae1">
+  <metadata>
+    <timestamp>2026-03-21T07:17:51.520Z</timestamp>
+    <tools>
+      <tool>
+        <vendor>@cyclonedx</vendor>
+        <name>webpack-plugin</name>
+        <version>3.17.0</version>
+        <externalReferences>
+          <reference type="vcs">
+            <url>git+https://github.com/CycloneDX/cyclonedx-webpack-plugin.git</url>
+            <comment>as detected from PackageJson property "repository.url"</comment>
+          </reference>
+          <reference type="website">
+            <url>https://github.com/CycloneDX/cyclonedx-webpack-plugin#readme</url>
+            <comment>as detected from PackageJson property "homepage"</comment>
+          </reference>
+          <reference type="issue-tracker">
+            <url>https://github.com/CycloneDX/cyclonedx-webpack-plugin/issues</url>
+            <comment>as detected from PackageJson property "bugs.url"</comment>
+          </reference>
+        </externalReferences>
+      </tool>
+      <tool>
+        <vendor>@cyclonedx</vendor>
+        <name>cyclonedx-library</name>
+        <version>6.13.1</version>
+        <externalReferences>
+          <reference type="vcs">
+            <url>git+https://github.com/CycloneDX/cyclonedx-javascript-library.git</url>
+            <comment>as detected from PackageJson property "repository.url"</comment>
+          </reference>
+          <reference type="website">
+            <url>https://github.com/CycloneDX/cyclonedx-javascript-library#readme</url>
+            <comment>as detected from PackageJson property "homepage"</comment>
+          </reference>
+          <reference type="issue-tracker">
+            <url>https://github.com/CycloneDX/cyclonedx-javascript-library/issues</url>
+            <comment>as detected from PackageJson property "bugs.url"</comment>
+          </reference>
+        </externalReferences>
+      </tool>
+    </tools>
+    <component type="library" bom-ref="pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git">
+      <author>Jahia Customer Support Team</author>
+      <group>@jahia</group>
+      <name>securitytxt</name>
+      <version>2.0.0-SNAPSHOT</version>
+      <description>security.txt for Jahia</description>
+      <licenses>
+        <license>
+          <id>MIT</id>
+        </license>
+      </licenses>
+      <purl>pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git</purl>
+      <externalReferences>
+        <reference type="vcs">
+          <url>git+ssh://git@github.com/Jahia/securitytxt.git</url>
+          <comment>as detected from PackageJson property "repository.url"</comment>
+        </reference>
+        <reference type="website">
+          <url>https://github.com/Jahia/securitytxt#readme</url>
+          <comment>as detected from PackageJson property "homepage"</comment>
+        </reference>
+        <reference type="issue-tracker">
+          <url>https://github.com/Jahia/securitytxt/issues</url>
+          <comment>as detected from PackageJson property "bugs.url"</comment>
+        </reference>
+      </externalReferences>
+    </component>
+  </metadata>
+  <components/>
+  <dependencies>
+    <dependency ref="pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git"/>
+  </dependencies>
+</bom>

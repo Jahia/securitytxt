@@ -1,0 +1,96 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "serialNumber": "urn:uuid:d301fc97-1650-43f8-8598-378003a87ae1",
+  "metadata": {
+    "timestamp": "2026-03-21T07:17:51.520Z",
+    "tools": [
+      {
+        "vendor": "@cyclonedx",
+        "name": "webpack-plugin",
+        "version": "3.17.0",
+        "externalReferences": [
+          {
+            "url": "git+https://github.com/CycloneDX/cyclonedx-webpack-plugin.git",
+            "type": "vcs",
+            "comment": "as detected from PackageJson property \"repository.url\""
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-webpack-plugin#readme",
+            "type": "website",
+            "comment": "as detected from PackageJson property \"homepage\""
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-webpack-plugin/issues",
+            "type": "issue-tracker",
+            "comment": "as detected from PackageJson property \"bugs.url\""
+          }
+        ]
+      },
+      {
+        "vendor": "@cyclonedx",
+        "name": "cyclonedx-library",
+        "version": "6.13.1",
+        "externalReferences": [
+          {
+            "url": "git+https://github.com/CycloneDX/cyclonedx-javascript-library.git",
+            "type": "vcs",
+            "comment": "as detected from PackageJson property \"repository.url\""
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-javascript-library#readme",
+            "type": "website",
+            "comment": "as detected from PackageJson property \"homepage\""
+          },
+          {
+            "url": "https://github.com/CycloneDX/cyclonedx-javascript-library/issues",
+            "type": "issue-tracker",
+            "comment": "as detected from PackageJson property \"bugs.url\""
+          }
+        ]
+      }
+    ],
+    "component": {
+      "type": "library",
+      "name": "securitytxt",
+      "group": "@jahia",
+      "version": "2.0.0-SNAPSHOT",
+      "bom-ref": "pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git",
+      "author": "Jahia Customer Support Team",
+      "description": "security.txt for Jahia",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "purl": "pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git",
+      "externalReferences": [
+        {
+          "url": "git+ssh://git@github.com/Jahia/securitytxt.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/Jahia/securitytxt#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/Jahia/securitytxt/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        }
+      ]
+    }
+  },
+  "components": [],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/%40jahia/securitytxt@2.0.0-SNAPSHOT?vcs_url=git%2Bssh%3A//git%40github.com/Jahia/securitytxt.git"
+    }
+  ]
+}
