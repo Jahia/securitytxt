@@ -31,7 +31,7 @@ public class SecurityTxtMutationExtension {
     @GraphQLField
     @GraphQLName("updateSecurityTxt")
     @GraphQLDescription("Create or update the security.txt settings for a site")
-    public GqlSecurityTxt updateSecurityTxt(
+    public static GqlSecurityTxt updateSecurityTxt(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey,
             @GraphQLName("contact") final String contact,
             @GraphQLName("encryption") final String encryption,
@@ -75,7 +75,7 @@ public class SecurityTxtMutationExtension {
         }
     }
 
-    private void setStringProp(JCRNodeWrapper node, String propName, String value)
+    private static void setStringProp(JCRNodeWrapper node, String propName, String value)
             throws RepositoryException {
         if (StringUtils.isNotBlank(value)) {
             node.setProperty(propName, value);
@@ -84,7 +84,7 @@ public class SecurityTxtMutationExtension {
         }
     }
 
-    private void setRefProp(JCRSessionWrapper session, JCRNodeWrapper node,
+    private static void setRefProp(JCRSessionWrapper session, JCRNodeWrapper node,
             String propName, String uuid) throws RepositoryException {
         if (StringUtils.isNotBlank(uuid)) {
             try {
