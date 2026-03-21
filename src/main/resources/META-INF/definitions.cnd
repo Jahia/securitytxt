@@ -7,9 +7,3 @@
  - policy (weakreference)
  - signature (weakreference)
  - hiring (weakreference)
-
-//---------------------------------------------------------
-// Security.txt Administration
-//---------------------------------------------------------
-
-[jnt:siteSettingsManageSecurityTxt] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
