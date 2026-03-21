@@ -24,20 +24,30 @@
 Contact: ${currentNode.properties['contact']}
 </c:if>
 
+<c:if test="${currentNode.properties['expires'] ne ''}">
+Expires: ${currentNode.properties['expires']}
+</c:if>
+
+<c:if test="${currentNode.properties['acknowledgments'] ne ''}">
+Acknowledgments: ${url.server}<c:url value="${currentNode.properties['acknowledgments'].node.url}"/>
+</c:if>
+
+<c:if test="${currentNode.properties['canonical'] ne ''}">
+Canonical: ${currentNode.properties['canonical']}
+</c:if>
+
 <c:if test="${currentNode.properties['encryption'] ne ''}">
 Encryption: ${url.server}<c:url value="${currentNode.properties['encryption'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['acknowledgements'] ne ''}">
-Acknowledgements: ${url.server}<c:url value="${currentNode.properties['acknowledgements'].node.url}"/>
+<c:if test="${currentNode.properties['hiring'] ne ''}">
+Hiring: ${url.server}<c:url value="${currentNode.properties['hiring'].node.url}"/>
 </c:if>
 
 <c:if test="${currentNode.properties['policy'] ne ''}">
 Policy: ${url.server}<c:url value="${currentNode.properties['policy'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['signature'] ne ''}">
-Signature: ${url.server}/.well-known/security.txt.sig
+<c:if test="${currentNode.properties['preferredLanguages'] ne ''}">
+Preferred-Languages: ${currentNode.properties['preferredLanguages']}
 </c:if>
-    
-<c:if test="${currentNode.properties['hiring'] ne ''}">Hiring: ${url.server}<c:url value="${currentNode.properties['hiring'].node.url}"/></c:if>

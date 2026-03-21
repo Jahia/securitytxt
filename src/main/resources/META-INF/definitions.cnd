@@ -2,8 +2,10 @@
 
 [jnt:securitytxt] > jnt:content, jmix:autoPublish
  - contact (string)
+ - expires (date)
+ - acknowledgments (weakreference)
+ - canonical (string)
  - encryption (weakreference)
- - acknowledgements (weakreference)
- - policy (weakreference)
- - signature (weakreference)
  - hiring (weakreference)
+ - policy (weakreference)
+ - preferredLanguages (string)

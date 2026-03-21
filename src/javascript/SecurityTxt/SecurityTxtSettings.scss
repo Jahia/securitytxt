@@ -79,6 +79,24 @@
     gap: var(--spacing-medium, 16px);
 }
 
+.securitytxt_datetime_input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 32px;
+    padding: 0 var(--spacing-small, 8px);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px;
+    color: var(--color-dark, #131c21);
+    background: var(--color-light, #fdfdfd);
+    border: 1px solid var(--color-gray_dark, #b2b5ba);
+    border-radius: var(--radius_small, 2px);
+    outline: none;
+
+    &:focus {
+        border-color: var(--color-accent, #00a0e3);
+    }
+}
+
 .securitytxt_actions {
     display: flex;
     gap: var(--spacing-small, 8px);

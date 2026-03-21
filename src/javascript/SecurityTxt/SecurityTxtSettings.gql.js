@@ -5,11 +5,13 @@ export const GET_SECURITY_TXT_SETTINGS = gql`
         securityTxtSettings(siteKey: $siteKey) {
             siteKey
             contact
+            expires
+            acknowledgments
+            canonical
             encryption
-            acknowledgements
-            policy
-            signature
             hiring
+            policy
+            preferredLanguages
         }
     }
 `;
@@ -52,28 +54,34 @@ export const UPDATE_SECURITY_TXT = gql`
     mutation UpdateSecurityTxt(
         $siteKey: String!
         $contact: String
+        $expires: String
+        $acknowledgments: String
+        $canonical: String
         $encryption: String
-        $acknowledgements: String
-        $policy: String
-        $signature: String
         $hiring: String
+        $policy: String
+        $preferredLanguages: String
     ) {
         updateSecurityTxt(
             siteKey: $siteKey
             contact: $contact
+            expires: $expires
+            acknowledgments: $acknowledgments
+            canonical: $canonical
             encryption: $encryption
-            acknowledgements: $acknowledgements
-            policy: $policy
-            signature: $signature
             hiring: $hiring
+            policy: $policy
+            preferredLanguages: $preferredLanguages
         ) {
             siteKey
             contact
+            expires
+            acknowledgments
+            canonical
             encryption
-            acknowledgements
-            policy
-            signature
             hiring
+            policy
+            preferredLanguages
         }
     }
 `;

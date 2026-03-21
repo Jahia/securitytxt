@@ -10,69 +10,78 @@ public class GqlSecurityTxt {
 
     private final String siteKey;
     private final String contact;
+    private final String expires;
+    private final String acknowledgments;
+    private final String canonical;
     private final String encryption;
-    private final String acknowledgements;
-    private final String policy;
-    private final String signature;
     private final String hiring;
+    private final String policy;
+    private final String preferredLanguages;
 
-    public GqlSecurityTxt(String siteKey, String contact, String encryption,
-            String acknowledgements, String policy, String signature, String hiring) {
+    public GqlSecurityTxt(String siteKey, String contact, String expires, String acknowledgments,
+            String canonical, String encryption, String hiring, String policy, String preferredLanguages) {
         this.siteKey = siteKey;
         this.contact = contact;
+        this.expires = expires;
+        this.acknowledgments = acknowledgments;
+        this.canonical = canonical;
         this.encryption = encryption;
-        this.acknowledgements = acknowledgements;
-        this.policy = policy;
-        this.signature = signature;
         this.hiring = hiring;
+        this.policy = policy;
+        this.preferredLanguages = preferredLanguages;
     }
 
     @GraphQLField
-    @GraphQLName("siteKey")
     @GraphQLDescription("The site key")
     public String getSiteKey() {
         return siteKey;
     }
 
     @GraphQLField
-    @GraphQLName("contact")
-    @GraphQLDescription("The security contact address (email or URL)")
+    @GraphQLDescription("The security contact address (email or URL) — RFC 9116 required field")
     public String getContact() {
         return contact;
     }
 
     @GraphQLField
-    @GraphQLName("encryption")
+    @GraphQLDescription("The expiry date of this file in RFC 3339 format — RFC 9116 required field")
+    public String getExpires() {
+        return expires;
+    }
+
+    @GraphQLField
+    @GraphQLDescription("UUID of the security acknowledgments page node")
+    public String getAcknowledgments() {
+        return acknowledgments;
+    }
+
+    @GraphQLField
+    @GraphQLDescription("The canonical URL of this security.txt file")
+    public String getCanonical() {
+        return canonical;
+    }
+
+    @GraphQLField
     @GraphQLDescription("UUID of the PGP key file node")
     public String getEncryption() {
         return encryption;
     }
 
     @GraphQLField
-    @GraphQLName("acknowledgements")
-    @GraphQLDescription("UUID of the security acknowledgements page node")
-    public String getAcknowledgements() {
-        return acknowledgements;
+    @GraphQLDescription("UUID of the hiring/careers page node")
+    public String getHiring() {
+        return hiring;
     }
 
     @GraphQLField
-    @GraphQLName("policy")
     @GraphQLDescription("UUID of the security policy page node")
     public String getPolicy() {
         return policy;
     }
 
     @GraphQLField
-    @GraphQLName("signature")
-    @GraphQLDescription("UUID of the signature file node")
-    public String getSignature() {
-        return signature;
-    }
-
-    @GraphQLField
-    @GraphQLName("hiring")
-    @GraphQLDescription("UUID of the hiring/careers page node")
-    public String getHiring() {
-        return hiring;
+    @GraphQLDescription("Preferred languages for vulnerability reports (comma-separated RFC 5646 tags)")
+    public String getPreferredLanguages() {
+        return preferredLanguages;
     }
 }

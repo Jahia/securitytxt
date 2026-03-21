@@ -11,16 +11,50 @@ import {
 } from './SecurityTxtSettings.gql';
 import {NodePicker} from './components/NodePicker';
 
+const toDatetimeLocal = rfc3339 => {
+    if (!rfc3339) {
+        return '';
+    }
+
+    const date = new Date(rfc3339);
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+    const pad = n => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+        `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
+
+const toRfc3339 = datetimeLocal => {
+    if (!datetimeLocal) {
+        return '';
+    }
+
+    const date = new Date(datetimeLocal);
+    const pad = n => String(n).padStart(2, '0');
+    const offsetMinutes = -date.getTimezoneOffset();
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absOffset = Math.abs(offsetMinutes);
+    const offsetStr = `${sign}${pad(Math.floor(absOffset / 60))}:${pad(absOffset % 60)}`;
+    const ms = String(date.getMilliseconds()).padStart(3, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+        `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${ms}${offsetStr}`;
+};
+
 export function SecurityTxtSettings({siteKey}) {
     const {t} = useTranslation('securitytxt');
 
     const [contact, setContact] = useState('');
+    const [expires, setExpires] = useState('');
+    const [acknowledgments, setAcknowledgments] = useState(null);
+    const [canonical, setCanonical] = useState('');
     const [encryption, setEncryption] = useState(null);
-    const [acknowledgements, setAcknowledgements] = useState(null);
-    const [policy, setPolicy] = useState(null);
-    const [signature, setSignature] = useState(null);
     const [hiring, setHiring] = useState(null);
+    const [policy, setPolicy] = useState(null);
+    const [preferredLanguages, setPreferredLanguages] = useState('');
     const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
+
     console.debug('%c security.txt: retrieving settings for %s', 'color: #463CBA', siteKey);
     const {data: settingsData, loading: settingsLoading, error: settingsError} = useQuery(
         GET_SECURITY_TXT_SETTINGS,
@@ -31,16 +65,17 @@ export function SecurityTxtSettings({siteKey}) {
         refetchQueries: [{query: GET_SECURITY_TXT_SETTINGS, variables: {siteKey}}]
     });
 
-    // Populate form when settings load
     useEffect(() => {
         if (settingsData && settingsData.securityTxtSettings) {
             const s = settingsData.securityTxtSettings;
             setContact(s.contact || '');
+            setExpires(toDatetimeLocal(s.expires));
+            setAcknowledgments(s.acknowledgments || null);
+            setCanonical(s.canonical || '');
             setEncryption(s.encryption || null);
-            setAcknowledgements(s.acknowledgements || null);
-            setPolicy(s.policy || null);
-            setSignature(s.signature || null);
             setHiring(s.hiring || null);
+            setPolicy(s.policy || null);
+            setPreferredLanguages(s.preferredLanguages || '');
         }
     }, [settingsData]);
 
@@ -51,11 +86,13 @@ export function SecurityTxtSettings({siteKey}) {
                 variables: {
                     siteKey,
                     contact: contact || null,
+                    expires: toRfc3339(expires) || null,
+                    acknowledgments,
+                    canonical: canonical || null,
                     encryption,
-                    acknowledgements,
+                    hiring,
                     policy,
-                    signature,
-                    hiring
+                    preferredLanguages: preferredLanguages || null
                 }
             });
             if (result.data && result.data.updateSecurityTxt) {
@@ -73,11 +110,13 @@ export function SecurityTxtSettings({siteKey}) {
         if (settingsData && settingsData.securityTxtSettings) {
             const s = settingsData.securityTxtSettings;
             setContact(s.contact || '');
+            setExpires(toDatetimeLocal(s.expires));
+            setAcknowledgments(s.acknowledgments || null);
+            setCanonical(s.canonical || '');
             setEncryption(s.encryption || null);
-            setAcknowledgements(s.acknowledgements || null);
-            setPolicy(s.policy || null);
-            setSignature(s.signature || null);
             setHiring(s.hiring || null);
+            setPolicy(s.policy || null);
+            setPreferredLanguages(s.preferredLanguages || '');
         }
         setSaveStatus(null);
     };
@@ -94,7 +133,8 @@ export function SecurityTxtSettings({siteKey}) {
         );
     }
 
-    return (<div>
+    return (
+        <div>
             <div className={styles.securitytxt_page_header}>
                 <h2>Security.txt - {siteKey}</h2>
             </div>
@@ -133,6 +173,34 @@ export function SecurityTxtSettings({siteKey}) {
                         />
                     </Field>
 
+                    <Field label={t('label.expires')} id="securitytxt-expires">
+                        <input
+                            id="securitytxt-expires"
+                            type="datetime-local"
+                            className={styles.securitytxt_datetime_input}
+                            value={expires}
+                            onChange={e => setExpires(e.target.value)}
+                        />
+                    </Field>
+
+                    <NodePicker
+                        label={t('label.acknowledgments')}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_PAGES}
+                        resultKey="securityTxtPages"
+                        value={acknowledgments}
+                        onChange={setAcknowledgments}
+                    />
+
+                    <Field label={t('label.canonical')} id="securitytxt-canonical">
+                        <Input
+                            id="securitytxt-canonical"
+                            value={canonical}
+                            onChange={e => setCanonical(e.target.value)}
+                            placeholder="https://example.com/.well-known/security.txt"
+                        />
+                    </Field>
+
                     <NodePicker
                         label={t('label.encryption')}
                         siteKey={siteKey}
@@ -143,12 +211,12 @@ export function SecurityTxtSettings({siteKey}) {
                     />
 
                     <NodePicker
-                        label={t('label.acknowledgements')}
+                        label={t('label.hiring')}
                         siteKey={siteKey}
                         query={GET_SECURITY_TXT_PAGES}
                         resultKey="securityTxtPages"
-                        value={acknowledgements}
-                        onChange={setAcknowledgements}
+                        value={hiring}
+                        onChange={setHiring}
                     />
 
                     <NodePicker
@@ -160,23 +228,14 @@ export function SecurityTxtSettings({siteKey}) {
                         onChange={setPolicy}
                     />
 
-                    <NodePicker
-                        label={t('label.signature')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_FILES}
-                        resultKey="securityTxtFiles"
-                        value={signature}
-                        onChange={setSignature}
-                    />
-
-                    <NodePicker
-                        label={t('label.hiring')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_PAGES}
-                        resultKey="securityTxtPages"
-                        value={hiring}
-                        onChange={setHiring}
-                    />
+                    <Field label={t('label.preferredLanguages')} id="securitytxt-preferredLanguages">
+                        <Input
+                            id="securitytxt-preferredLanguages"
+                            value={preferredLanguages}
+                            onChange={e => setPreferredLanguages(e.target.value)}
+                            placeholder="en, fr"
+                        />
+                    </Field>
 
                     <div className={styles.securitytxt_actions}>
                         <Button

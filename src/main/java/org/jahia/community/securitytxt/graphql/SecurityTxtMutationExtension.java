@@ -5,7 +5,6 @@ import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import graphql.annotations.annotationTypes.GraphQLNonNull;
 import graphql.annotations.annotationTypes.GraphQLTypeExtension;
-import graphql.schema.DataFetchingEnvironment;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -14,7 +13,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
-
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
@@ -35,12 +33,13 @@ public class SecurityTxtMutationExtension {
     public static GqlSecurityTxt updateSecurityTxt(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey,
             @GraphQLName("contact") final String contact,
+            @GraphQLName("expires") final String expires,
+            @GraphQLName("acknowledgments") final String acknowledgments,
+            @GraphQLName("canonical") final String canonical,
             @GraphQLName("encryption") final String encryption,
-            @GraphQLName("acknowledgements") final String acknowledgements,
-            @GraphQLName("policy") final String policy,
-            @GraphQLName("signature") final String signature,
             @GraphQLName("hiring") final String hiring,
-            final DataFetchingEnvironment environment) {
+            @GraphQLName("policy") final String policy,
+            @GraphQLName("preferredLanguages") final String preferredLanguages) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<GqlSecurityTxt>() {
                 @Override
@@ -63,16 +62,18 @@ public class SecurityTxtMutationExtension {
                     }
 
                     setStringProp(node, "contact", contact);
+                    setStringProp(node, "expires", expires);
+                    setRefProp(session, node, "acknowledgments", acknowledgments);
+                    setStringProp(node, "canonical", canonical);
                     setRefProp(session, node, "encryption", encryption);
-                    setRefProp(session, node, "acknowledgements", acknowledgements);
-                    setRefProp(session, node, "policy", policy);
-                    setRefProp(session, node, "signature", signature);
                     setRefProp(session, node, "hiring", hiring);
+                    setRefProp(session, node, "policy", policy);
+                    setStringProp(node, "preferredLanguages", preferredLanguages);
 
                     session.save();
 
-                    return new GqlSecurityTxt(siteKey, contact, encryption,
-                            acknowledgements, policy, signature, hiring);
+                    return new GqlSecurityTxt(siteKey, contact, expires, acknowledgments,
+                            canonical, encryption, hiring, policy, preferredLanguages);
                 }
             });
         } catch (RepositoryException e) {

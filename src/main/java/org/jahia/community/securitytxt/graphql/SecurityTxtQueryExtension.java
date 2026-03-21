@@ -41,17 +41,19 @@ public class SecurityTxtQueryExtension {
                     }
                     JCRNodeWrapper siteNode = session.getNode(sitePath);
                     if (!siteNode.hasNode(SECURITY_TXT)) {
-                        return new GqlSecurityTxt(siteKey, null, null, null, null, null, null);
+                        return new GqlSecurityTxt(siteKey, null, null, null, null, null, null, null, null);
                     }
                     JCRNodeWrapper node = siteNode.getNode(SECURITY_TXT);
                     return new GqlSecurityTxt(
                             siteKey,
                             getStringProp(node, "contact"),
+                            getStringProp(node, "expires"),
+                            getRefPropUUID(node, "acknowledgments"),
+                            getStringProp(node, "canonical"),
                             getRefPropUUID(node, "encryption"),
-                            getRefPropUUID(node, "acknowledgements"),
+                            getRefPropUUID(node, "hiring"),
                             getRefPropUUID(node, "policy"),
-                            getRefPropUUID(node, "signature"),
-                            getRefPropUUID(node, "hiring")
+                            getStringProp(node, "preferredLanguages")
                     );
                 }
             });
