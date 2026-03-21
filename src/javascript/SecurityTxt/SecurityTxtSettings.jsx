@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {useTranslation} from 'react-i18next';
+import {Button, Field, Input} from '@jahia/moonstone';
 import styles from './SecurityTxtSettings.scss';
 import {
     GET_SECURITY_TXT_FILES,
@@ -55,8 +56,7 @@ export function SecurityTxtSettings({siteKey}) {
         }
     }, [settingsData]);
 
-    const handleSubmit = async e => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         setSaveStatus(null);
         try {
             const result = await updateSecurityTxt({
@@ -100,7 +100,7 @@ export function SecurityTxtSettings({siteKey}) {
 
     if (settingsError) {
         return (
-            <div className="{styles.securitytxt-error">
+            <div className={styles.securitytxt_error}>
                 {t('securitytxt.errors.load.failed')}: {settingsError.message}
             </div>
         );
@@ -128,30 +128,25 @@ export function SecurityTxtSettings({siteKey}) {
                 </div>
 
                 {saveStatus === 'success' && (
-                    <div className="styles.securitytxt_alert securitytxt_alert--success">
+                    <div className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--success']}`}>
                         {t('securitytxt.success.update')}
                     </div>
                 )}
                 {saveStatus === 'error' && (
-                    <div className="styles.securitytxt_alert securitytxt_alert--error">
+                    <div className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--error']}`}>
                         {t('securitytxt.errors.update.failed')}
                     </div>
                 )}
 
-                <form className={styles.securitytxt_form} onSubmit={handleSubmit}>
-                    <div className={styles.securitytxt_field}>
-                        <label className={styles.securitytxt_label} htmlFor="securitytxt-contact">
-                            {t('label.contact')}
-                        </label>
-                        <input
+                <div className={styles.securitytxt_form}>
+                    <Field label={t('label.contact')} id="securitytxt-contact">
+                        <Input
                             id="securitytxt-contact"
-                            type="text"
-                            className={styles.securitytxt_input}
                             value={contact}
                             onChange={e => setContact(e.target.value)}
                             placeholder="mailto:security@example.com"
                         />
-                    </div>
+                    </Field>
 
                     <NodePicker
                         label={t('label.encryption')}
@@ -189,23 +184,20 @@ export function SecurityTxtSettings({siteKey}) {
                     />
 
                     <div className={styles.securitytxt_actions}>
-                        <button
-                            type="submit"
-                            className="{styles.securitytxt_btn styles.securitytxt_btn_primary}"
-                            disabled={saving}
-                        >
-                            {saving ? t('label.saving') : t('label.update')}
-                        </button>
-                        <button
-                            type="button"
-                            className={styles.securitytxt_btn}
+                        <Button
+                            label={saving ? t('label.saving') : t('label.update')}
+                            variant="primary"
+                            isDisabled={saving}
+                            onClick={handleSubmit}
+                        />
+                        <Button
+                            label={t('label.cancel')}
+                            variant="secondary"
+                            isDisabled={saving}
                             onClick={handleCancel}
-                            disabled={saving}
-                        >
-                            {t('label.cancel')}
-                        </button>
+                        />
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );

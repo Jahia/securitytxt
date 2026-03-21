@@ -1,30 +1,31 @@
 import React from 'react';
-import styles from '../SecurityTxtSettings.scss';
+import {Dropdown, Field} from '@jahia/moonstone';
 
-export function NodePicker({ label, items, value, onChange, required }) {
-    const handleChange = e => {
-        onChange(e.target.value || null);
+export function NodePicker({label, items, value, onChange}) {
+    const data = (items || []).map(item => ({
+        label: item.path,
+        value: item.uuid
+    }));
+
+    const handleChange = (_event, item) => {
+        onChange(item ? item.value : null);
+    };
+
+    const handleClear = () => {
+        onChange(null);
     };
 
     return (
-        <div className={styles.securitytxt_field}>
-            <label className={styles.securitytxt_label}>
-                {label}
-                {required && <span className={styles.securitytxt_required}> *</span>}
-            </label>
-            <select
-                className={styles.securitytxt_select}
+        <Field label={label} id={`securitytxt-picker-${label}`}>
+            <Dropdown
+                data={data}
                 value={value || ''}
+                variant="outlined"
+                placeholder={`— ${label} —`}
                 onChange={handleChange}
-            >
-                <option value="">— {label} —</option>
-                {items && items.map(item => (
-                    <option key={item.uuid} value={item.uuid} title={item.path}>
-                        {item.path}
-                    </option>
-                ))}
-            </select>
-        </div>
+                onClear={value ? handleClear : undefined}
+            />
+        </Field>
     );
 }
 
