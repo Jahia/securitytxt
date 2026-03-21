@@ -1,3 +1,18 @@
 {
-  "label" : "Support token authentication"
+  "label": "security.txt",
+  "label.contact": "Security contact address",
+  "label.encryption": "PGP key file",
+  "label.acknowledgements": "Acknowledgements page",
+  "label.policy": "Security policy page",
+  "label.signature": "Signature file",
+  "label.hiring": "Hiring page",
+  "label.update": "Save",
+  "label.cancel": "Cancel",
+  "label.saving": "Saving…",
+  "label.loading": "Loading…",
+  "securitytxt.description": "Please refer to this website for more information about the file security.txt:",
+  "securitytxt.signature.hint": "Once the file is ready, you can create the signature with the command",
+  "securitytxt.success.update": "Security.txt settings saved successfully.",
+  "securitytxt.errors.update.failed": "Failed to save security.txt settings.",
+  "securitytxt.errors.load.failed": "Failed to load security.txt settings"
 }

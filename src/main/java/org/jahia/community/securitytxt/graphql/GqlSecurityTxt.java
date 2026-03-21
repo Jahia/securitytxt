@@ -28,42 +28,49 @@ public class GqlSecurityTxt {
     }
 
     @GraphQLField
+    @GraphQLName("siteKey")
     @GraphQLDescription("The site key")
     public String getSiteKey() {
         return siteKey;
     }
 
     @GraphQLField
+    @GraphQLName("contact")
     @GraphQLDescription("The security contact address (email or URL)")
     public String getContact() {
         return contact;
     }
 
     @GraphQLField
+    @GraphQLName("encryption")
     @GraphQLDescription("UUID of the PGP key file node")
     public String getEncryption() {
         return encryption;
     }
 
     @GraphQLField
+    @GraphQLName("acknowledgements")
     @GraphQLDescription("UUID of the security acknowledgements page node")
     public String getAcknowledgements() {
         return acknowledgements;
     }
 
     @GraphQLField
+    @GraphQLName("policy")
     @GraphQLDescription("UUID of the security policy page node")
     public String getPolicy() {
         return policy;
     }
 
     @GraphQLField
+    @GraphQLName("signature")
     @GraphQLDescription("UUID of the signature file node")
     public String getSignature() {
         return signature;
     }
 
     @GraphQLField
+    @GraphQLName("hiring")
     @GraphQLDescription("UUID of the hiring/careers page node")
     public String getHiring() {
         return hiring;

@@ -13,7 +13,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.modules.graphql.provider.dxm.node.GqlJcrNodeMutation;
 import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
 
 
@@ -23,9 +22,9 @@ import javax.jcr.RepositoryException;
 @GraphQLTypeExtension(DXGraphQLProvider.Mutation.class)
 @GraphQLName("SecurityTxtMutations")
 @GraphQLDescription("Security.txt management mutations")
-public class SecurityTxtMutationExtensions {
+public class SecurityTxtMutationExtension {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtMutationExtensions.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtMutationExtension.class);
     private static final String SECURITY_TXT = "securitytxt";
     private static final String SECURITY_TXT_NODE_TYPE = "jnt:securitytxt";
 

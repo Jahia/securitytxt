@@ -15,20 +15,20 @@ import java.util.Collections;
 import java.util.List;
 
 @GraphQLTypeExtension(DXGraphQLProvider.Query.class)
-//@GraphQLName("SecurityTxtQueries")
+@GraphQLName("SecurityTxtQueries")
 @GraphQLDescription("Security.txt management queries")
-public class SecurityTxtQueryExtensions {
+public class SecurityTxtQueryExtension {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtQueryExtensions.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtQueryExtension.class);
     private static final String SECURITY_TXT = "securitytxt";
 
-    public SecurityTxtQueryExtensions(DXGraphQLProvider.Query query) {
+    private SecurityTxtQueryExtension() {
     }
 
     @GraphQLField
     @GraphQLName("securityTxtSettings")
     @GraphQLDescription("Get the security.txt settings for a site")
-    public GqlSecurityTxt getSecurityTxtSettings(
+    public static GqlSecurityTxt getSecurityTxtSettings(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<GqlSecurityTxt>() {
@@ -63,7 +63,7 @@ public class SecurityTxtQueryExtensions {
     @GraphQLField
     @GraphQLName("securityTxtFiles")
     @GraphQLDescription("Get the list of files available in the site (for encryption and signature pickers)")
-    public List<GqlFileItem> getSecurityTxtFiles(
+    public static List<GqlFileItem> getSecurityTxtFiles(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<GqlFileItem>>() {
@@ -81,7 +81,7 @@ public class SecurityTxtQueryExtensions {
     @GraphQLField
     @GraphQLName("securityTxtPages")
     @GraphQLDescription("Get the list of pages available in the site (for acknowledgements, policy, hiring pickers)")
-    public List<GqlFileItem> getSecurityTxtPages(
+    public static List<GqlFileItem> getSecurityTxtPages(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<GqlFileItem>>() {
@@ -96,7 +96,7 @@ public class SecurityTxtQueryExtensions {
         }
     }
 
-    private List<GqlFileItem> getSiteItems(JCRSessionWrapper session, String siteKey,
+    private static List<GqlFileItem> getSiteItems(JCRSessionWrapper session, String siteKey,
             String relPath, String nodeType) throws RepositoryException {
         List<GqlFileItem> items = new ArrayList<>();
         String sitePath = "/sites/" + siteKey;
@@ -136,14 +136,14 @@ public class SecurityTxtQueryExtensions {
         return items;
     }
 
-    private String getStringProp(JCRNodeWrapper node, String propName) throws RepositoryException {
+    private static String getStringProp(JCRNodeWrapper node, String propName) throws RepositoryException {
         if (node.hasProperty(propName)) {
             return node.getPropertyAsString(propName);
         }
         return null;
     }
 
-    private String getRefPropUUID(JCRNodeWrapper node, String propName) throws RepositoryException {
+    private static String getRefPropUUID(JCRNodeWrapper node, String propName) throws RepositoryException {
         if (node.hasProperty(propName)) {
             try {
                 return node.getProperty(propName).getNode().getIdentifier();

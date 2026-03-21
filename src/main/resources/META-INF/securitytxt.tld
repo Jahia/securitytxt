@@ -13,7 +13,7 @@
     <function>
         <description>downloadBinaryContent</description>
         <name>downloadBinaryContent</name>
-        <function-class>org.jahia.modules.securitytxt.taglibs.Functions</function-class>
+        <function-class>org.jahia.community.securitytxt.taglibs.Functions</function-class>
         <function-signature>boolean downloadBinaryContent(org.jahia.services.render.RenderContext, org.jahia.services.content.JCRNodeWrapper)</function-signature>
     </function>
 </taglib>

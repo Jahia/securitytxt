@@ -1,30 +1,30 @@
-import { registry } from '@jahia/ui-extender';
-import SecurityTxtSettings from './index';
+import {registry} from '@jahia/ui-extender';
+import SecurityTxtSettings from "./SecurityTxtSettings";
+import React from "react";
 
-/**
- * Wraps SecurityTxtSettings to extract the siteKey from the admin route context.
- * In Jahia 8.2, site-level admin routes receive a `match` prop from React Router
- * containing route parameters, including the site key.
- */
 function SecurityTxtSettingsRoute(props) {
     // The siteKey is provided by Jahia admin via match params or context
+    console.debug('%c security.txt: determining site key', 'color: #463CBA');
     const siteKey =
         (props.match && props.match.params && props.match.params.siteKey) ||
         window.contextJsParameters.siteKey;
 
     if (!siteKey) {
+        console.debug('%c security.txt: no site key', 'color: #463CBA');
         return <div>No site selected.</div>;
     }
-
+    console.debug('%c security.txt: site key %s', 'color: #463CBA', siteKey);
     return <SecurityTxtSettings siteKey={siteKey} />;
 }
 
-export function register() {
+export default () => {
+    console.debug('%c security.txt: activation in progress', 'color: #463CBA');
     registry.add('adminRoute', 'securitytxt', {
-        targets: ['administration-sites:10'],
+        icon: window.jahia.moonstone.toIconComponent('FileText'),
+        targets: ['administration-sites:999'],
         requiredPermission: 'siteAdminSecurityTxt',
         label: 'securitytxt:label',
         isSelectable: true,
-        component: SecurityTxtSettingsRoute
+        render: () => React.createElement(SecurityTxtSettingsRoute)
     });
 }

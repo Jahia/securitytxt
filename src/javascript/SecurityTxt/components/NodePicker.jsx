@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * A simple dropdown picker for selecting a JCR node (file or page).
  * Items are provided as [{uuid, path, name}] from the GraphQL query.

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import {
@@ -19,17 +19,19 @@ export function SecurityTxtSettings({ siteKey }) {
     const [signature, setSignature] = useState(null);
     const [hiring, setHiring] = useState(null);
     const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
-
+    console.debug('%c security.txt: retrieving settings for %s', 'color: #463CBA', siteKey);
     const { data: settingsData, loading: settingsLoading, error: settingsError } = useQuery(
         GET_SECURITY_TXT_SETTINGS,
         { variables: { siteKey }, fetchPolicy: 'network-only' }
     );
 
+    console.debug('%c security.txt: retrieving files data for %s', 'color: #463CBA', siteKey);
     const { data: filesData, loading: filesLoading } = useQuery(
         GET_SECURITY_TXT_FILES,
         { variables: { siteKey } }
     );
 
+    console.debug('%c security.txt: retrieving pages data for %s', 'color: #463CBA', siteKey);
     const { data: pagesData, loading: pagesLoading } = useQuery(
         GET_SECURITY_TXT_PAGES,
         { variables: { siteKey } }
