@@ -10,7 +10,10 @@
     "update": "Save",
     "cancel": "Cancel",
     "saving": "Saving…",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "picker": {
+      "noResults": "No results"
+    }
   },
   "securitytxt": {
     "description": "Please refer to this website for more information about the file security.txt:",
