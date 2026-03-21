@@ -1,21 +1,19 @@
 import React from 'react';
-/**
- * A simple dropdown picker for selecting a JCR node (file or page).
- * Items are provided as [{uuid, path, name}] from the GraphQL query.
- */
+import styles from '../SecurityTxtSettings.scss';
+
 export function NodePicker({ label, items, value, onChange, required }) {
     const handleChange = e => {
         onChange(e.target.value || null);
     };
 
     return (
-        <div className="securitytxt-field">
-            <label className="securitytxt-label">
+        <div className={styles.securitytxt_field}>
+            <label className={styles.securitytxt_label}>
                 {label}
-                {required && <span className="securitytxt-required"> *</span>}
+                {required && <span className={styles.securitytxt_required}> *</span>}
             </label>
             <select
-                className="securitytxt-select"
+                className={styles.securitytxt_select}
                 value={value || ''}
                 onChange={handleChange}
             >

@@ -18,4 +18,4 @@ node
 yarn-error.log
 .yarn-integrity
 # Webpack chunks (only the main bundle is committed)
-src/main/resources/javascript/apps/*.securitytxt.*.js
+src/main/resources/javascript/apps

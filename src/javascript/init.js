@@ -2,8 +2,8 @@ import {registry} from '@jahia/ui-extender';
 import register from './SecurityTxt/register';
 import i18next from 'i18next';
 
-window.jahia.localeFiles = window.jahia.localeFiles || {};
-window.jahia.localeFiles['securitytxt'] = hashes;
+// window.jahia.localeFiles = window.jahia.localeFiles || {};
+// window.jahia.localeFiles['securitytxt'] = hashes;
 
 export default function () {
     registry.add('callback', 'securitytxt', {
