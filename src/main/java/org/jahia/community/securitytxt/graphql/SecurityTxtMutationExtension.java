@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
 
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 
@@ -44,12 +45,17 @@ public class SecurityTxtMutationExtension {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<GqlSecurityTxt>() {
                 @Override
                 public GqlSecurityTxt doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    String sitePath = "/sites/" + siteKey;
+                    final String sitePath = "/sites/" + siteKey;
                     if (!session.nodeExists(sitePath)) {
                         throw new RepositoryException("Site not found: " + siteKey);
                     }
-                    JCRNodeWrapper siteNode = session.getNode(sitePath);
-                    JCRNodeWrapper node;
+
+                    final JCRNodeWrapper siteNode = session.getNode(sitePath);
+                    if (!siteNode.hasPermission("siteAdminSecurityTxt")) {
+                        throw new AccessDeniedException("siteAdminSecurityTxt");
+                    }
+
+                    final JCRNodeWrapper node;
                     if (siteNode.hasNode(SECURITY_TXT)) {
                         node = siteNode.getNode(SECURITY_TXT);
                     } else {
@@ -88,7 +94,7 @@ public class SecurityTxtMutationExtension {
             String propName, String uuid) throws RepositoryException {
         if (StringUtils.isNotBlank(uuid)) {
             try {
-                JCRNodeWrapper refNode = session.getNodeByIdentifier(uuid);
+                final JCRNodeWrapper refNode = session.getNodeByIdentifier(uuid);
                 node.setProperty(propName, refNode);
             } catch (ItemNotFoundException e) {
                 LOGGER.warn("Referenced node not found for property {}: {}", propName, uuid);

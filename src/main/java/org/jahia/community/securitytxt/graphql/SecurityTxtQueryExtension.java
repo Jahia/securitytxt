@@ -6,6 +6,7 @@ import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -97,42 +98,46 @@ public class SecurityTxtQueryExtension {
     }
 
     private static List<GqlFileItem> getSiteItems(JCRSessionWrapper session, String siteKey,
-            String relPath, String nodeType) throws RepositoryException {
-        List<GqlFileItem> items = new ArrayList<>();
-        String sitePath = "/sites/" + siteKey;
+                                                  String relPath, String nodeType) throws RepositoryException {
+        final List<GqlFileItem> items = new ArrayList<>();
+        final String sitePath = "/sites/" + siteKey;
         if (!session.nodeExists(sitePath)) {
-            return items;
+            throw new RepositoryException("Site not found: " + siteKey);
         }
-        JCRNodeWrapper siteNode = session.getNode(sitePath);
-        Node rootNode = null;
+        final JCRNodeWrapper siteNode = session.getNode(sitePath);
+        if (!siteNode.hasPermission("siteAdminSecurityTxt")) {
+            throw new AccessDeniedException("siteAdminSecurityTxt");
+        }
+
+        final Node rootNode;
         try {
             rootNode = siteNode.getNode(relPath);
             items.add(new GqlFileItem(rootNode.getPath(), rootNode.getIdentifier(), rootNode.getName()));
+            final StringBuilder filter = new StringBuilder("isdescendantnode(f,['")
+                    .append(JCRContentUtils.sqlEncode(rootNode.getPath()))
+                    .append("'])");
+            for (JCRStoreProvider provider : JCRStoreService.getInstance().getSessionFactory().getProviderList()) {
+                if (!provider.isDefault() && provider.getMountPoint().startsWith(rootNode.getPath())) {
+                    filter.append(" and (not isdescendantnode(f,['")
+                            .append(JCRContentUtils.sqlEncode(provider.getMountPoint()))
+                            .append("']))");
+                }
+            }
+
+            final QueryManager qm = session.getWorkspace().getQueryManager();
+            final javax.jcr.query.Query q = qm.createQuery(
+                    "select * from [" + nodeType + "] as f where " + filter,
+                    javax.jcr.query.Query.JCR_SQL2);
+            final NodeIterator nodes = q.execute().getNodes();
+            while (nodes.hasNext()) {
+                final Node node = nodes.nextNode();
+                items.add(new GqlFileItem(node.getPath(), node.getIdentifier(), node.getName()));
+            }
         } catch (RepositoryException e) {
             // No root node, return empty list
             return items;
         }
 
-        StringBuilder filter = new StringBuilder("isdescendantnode(f,['")
-                .append(JCRContentUtils.sqlEncode(rootNode.getPath()))
-                .append("'])");
-        for (JCRStoreProvider provider : JCRStoreService.getInstance().getSessionFactory().getProviderList()) {
-            if (!provider.isDefault() && provider.getMountPoint().startsWith(rootNode.getPath())) {
-                filter.append(" and (not isdescendantnode(f,['")
-                        .append(JCRContentUtils.sqlEncode(provider.getMountPoint()))
-                        .append("']))");
-            }
-        }
-
-        QueryManager qm = session.getWorkspace().getQueryManager();
-        javax.jcr.query.Query q = qm.createQuery(
-                "select * from [" + nodeType + "] as f where " + filter,
-                javax.jcr.query.Query.JCR_SQL2);
-        NodeIterator nodes = q.execute().getNodes();
-        while (nodes.hasNext()) {
-            Node n = nodes.nextNode();
-            items.add(new GqlFileItem(n.getPath(), n.getIdentifier(), n.getName()));
-        }
         return items;
     }
 
