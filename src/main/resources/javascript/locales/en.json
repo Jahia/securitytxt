@@ -12,7 +12,8 @@
     "saving": "Saving…",
     "loading": "Loading…",
     "picker": {
-      "noResults": "No results"
+      "noResults": "No results",
+      "search": "Search…"
     }
   },
   "securitytxt": {

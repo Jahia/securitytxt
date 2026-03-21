@@ -27,18 +27,6 @@ export function SecurityTxtSettings({siteKey}) {
         {variables: {siteKey}, fetchPolicy: 'network-only'}
     );
 
-    console.debug('%c security.txt: retrieving files data for %s', 'color: #463CBA', siteKey);
-    const {data: filesData, loading: filesLoading} = useQuery(
-        GET_SECURITY_TXT_FILES,
-        {variables: {siteKey}}
-    );
-
-    console.debug('%c security.txt: retrieving pages data for %s', 'color: #463CBA', siteKey);
-    const {data: pagesData, loading: pagesLoading} = useQuery(
-        GET_SECURITY_TXT_PAGES,
-        {variables: {siteKey}}
-    );
-
     const [updateSecurityTxt, {loading: saving}] = useMutation(UPDATE_SECURITY_TXT, {
         refetchQueries: [{query: GET_SECURITY_TXT_SETTINGS, variables: {siteKey}}]
     });
@@ -94,7 +82,7 @@ export function SecurityTxtSettings({siteKey}) {
         setSaveStatus(null);
     };
 
-    if (settingsLoading || filesLoading || pagesLoading) {
+    if (settingsLoading) {
         return <div className={styles.securitytxt_loading}>{t('label.loading')}</div>;
     }
 
@@ -105,9 +93,6 @@ export function SecurityTxtSettings({siteKey}) {
             </div>
         );
     }
-
-    const files = filesData ? filesData.securityTxtFiles : [];
-    const pages = pagesData ? pagesData.securityTxtPages : [];
 
     return (<div>
             <div className={styles.securitytxt_page_header}>
@@ -150,35 +135,45 @@ export function SecurityTxtSettings({siteKey}) {
 
                     <NodePicker
                         label={t('label.encryption')}
-                        items={files}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_FILES}
+                        resultKey="securityTxtFiles"
                         value={encryption}
                         onChange={setEncryption}
                     />
 
                     <NodePicker
                         label={t('label.acknowledgements')}
-                        items={pages}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_PAGES}
+                        resultKey="securityTxtPages"
                         value={acknowledgements}
                         onChange={setAcknowledgements}
                     />
 
                     <NodePicker
                         label={t('label.policy')}
-                        items={pages}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_PAGES}
+                        resultKey="securityTxtPages"
                         value={policy}
                         onChange={setPolicy}
                     />
 
                     <NodePicker
                         label={t('label.signature')}
-                        items={files}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_FILES}
+                        resultKey="securityTxtFiles"
                         value={signature}
                         onChange={setSignature}
                     />
 
                     <NodePicker
                         label={t('label.hiring')}
-                        items={pages}
+                        siteKey={siteKey}
+                        query={GET_SECURITY_TXT_PAGES}
+                        resultKey="securityTxtPages"
                         value={hiring}
                         onChange={setHiring}
                     />

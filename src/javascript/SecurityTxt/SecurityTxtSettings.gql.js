@@ -15,21 +15,35 @@ export const GET_SECURITY_TXT_SETTINGS = gql`
 `;
 
 export const GET_SECURITY_TXT_FILES = gql`
-    query SecurityTxtFiles($siteKey: String!) {
-        securityTxtFiles(siteKey: $siteKey) {
+    query SecurityTxtFiles($siteKey: String!, $searchTerm: String) {
+        securityTxtFiles(siteKey: $siteKey, searchTerm: $searchTerm) {
             path
             uuid
             name
+            displayName
         }
     }
 `;
 
 export const GET_SECURITY_TXT_PAGES = gql`
-    query SecurityTxtPages($siteKey: String!) {
-        securityTxtPages(siteKey: $siteKey) {
+    query SecurityTxtPages($siteKey: String!, $searchTerm: String) {
+        securityTxtPages(siteKey: $siteKey, searchTerm: $searchTerm) {
             path
             uuid
             name
+            displayName
+        }
+    }
+`;
+
+export const GET_NODE_BY_UUID = gql`
+    query GetNodeByUUID($uuid: String!) {
+        jcr {
+            nodeById(uuid: $uuid) {
+                uuid
+                path
+                displayName
+            }
         }
     }
 `;

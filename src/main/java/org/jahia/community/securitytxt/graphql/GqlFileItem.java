@@ -11,11 +11,13 @@ public class GqlFileItem {
     private final String path;
     private final String uuid;
     private final String name;
+    private final String displayName;
 
-    public GqlFileItem(String path, String uuid, String name) {
+    public GqlFileItem(String path, String uuid, String name, String displayName) {
         this.path = path;
         this.uuid = uuid;
         this.name = name;
+        this.displayName = displayName;
     }
 
     @GraphQLField
@@ -31,8 +33,14 @@ public class GqlFileItem {
     }
 
     @GraphQLField
-    @GraphQLDescription("The display name of the node")
+    @GraphQLDescription("The JCR name of the node")
     public String getName() {
         return name;
+    }
+
+    @GraphQLField
+    @GraphQLDescription("The display name of the node (jcr:title if set, JCR name otherwise)")
+    public String getDisplayName() {
+        return displayName;
     }
 }

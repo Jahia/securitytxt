@@ -65,12 +65,13 @@ public class SecurityTxtQueryExtension {
     @GraphQLName("securityTxtFiles")
     @GraphQLDescription("Get the list of files available in the site (for encryption and signature pickers)")
     public static List<GqlFileItem> getSecurityTxtFiles(
-            @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
+            @GraphQLName("siteKey") @GraphQLNonNull final String siteKey,
+            @GraphQLName("searchTerm") final String searchTerm) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<GqlFileItem>>() {
                 @Override
                 public List<GqlFileItem> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSiteItems(session, siteKey, "files", "jnt:file");
+                    return getSiteItems(session, siteKey, "files", "jnt:file", searchTerm);
                 }
             });
         } catch (RepositoryException e) {
@@ -83,12 +84,13 @@ public class SecurityTxtQueryExtension {
     @GraphQLName("securityTxtPages")
     @GraphQLDescription("Get the list of pages available in the site (for acknowledgements, policy, hiring pickers)")
     public static List<GqlFileItem> getSecurityTxtPages(
-            @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
+            @GraphQLName("siteKey") @GraphQLNonNull final String siteKey,
+            @GraphQLName("searchTerm") final String searchTerm) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<GqlFileItem>>() {
                 @Override
                 public List<GqlFileItem> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return getSiteItems(session, siteKey, "home", "jnt:page");
+                    return getSiteItems(session, siteKey, "home", "jnt:page", searchTerm);
                 }
             });
         } catch (RepositoryException e) {
@@ -98,7 +100,7 @@ public class SecurityTxtQueryExtension {
     }
 
     private static List<GqlFileItem> getSiteItems(JCRSessionWrapper session, String siteKey,
-                                                  String relPath, String nodeType) throws RepositoryException {
+                                                  String relPath, String nodeType, String searchTerm) throws RepositoryException {
         final List<GqlFileItem> items = new ArrayList<>();
         final String sitePath = "/sites/" + siteKey;
         if (!session.nodeExists(sitePath)) {
@@ -109,10 +111,10 @@ public class SecurityTxtQueryExtension {
             throw new AccessDeniedException("siteAdminSecurityTxt");
         }
 
-        final Node rootNode;
+        final JCRNodeWrapper rootNode;
         try {
             rootNode = siteNode.getNode(relPath);
-            items.add(new GqlFileItem(rootNode.getPath(), rootNode.getIdentifier(), rootNode.getName()));
+            items.add(new GqlFileItem(rootNode.getPath(), rootNode.getIdentifier(), rootNode.getName(), rootNode.getDisplayableName()));
             final StringBuilder filter = new StringBuilder("isdescendantnode(f,['")
                     .append(JCRContentUtils.sqlEncode(rootNode.getPath()))
                     .append("'])");
@@ -124,14 +126,20 @@ public class SecurityTxtQueryExtension {
                 }
             }
 
+            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                filter.append(" and localname(f) like '%")
+                        .append(searchTerm.trim().replace("'", "''"))
+                        .append("%'");
+            }
+
             final QueryManager qm = session.getWorkspace().getQueryManager();
             final javax.jcr.query.Query q = qm.createQuery(
                     "select * from [" + nodeType + "] as f where " + filter,
                     javax.jcr.query.Query.JCR_SQL2);
             final NodeIterator nodes = q.execute().getNodes();
             while (nodes.hasNext()) {
-                final Node node = nodes.nextNode();
-                items.add(new GqlFileItem(node.getPath(), node.getIdentifier(), node.getName()));
+                final JCRNodeWrapper node = (JCRNodeWrapper) nodes.nextNode();
+                items.add(new GqlFileItem(node.getPath(), node.getIdentifier(), node.getName(), node.getDisplayableName()));
             }
         } catch (RepositoryException e) {
             // No root node, return empty list
