@@ -5,11 +5,15 @@
     <rule>
         <from>^/.well-known/security.txt$</from>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
-        <to last="true">/cms/render/live/%{attribute:siteDefaultLanguage}/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/securitytxt.txt</to>
+        <to last="true">
+            /cms/render/live/%{attribute:siteDefaultLanguage}/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/securitytxt.txt
+        </to>
     </rule>
     <rule>
         <from>^/.well-known/security.txt.sig$</from>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
-        <to last="true">/cms/render/live/%{attribute:siteDefaultLanguage}/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/securitytxt.signature.txt</to>
+        <to last="true">
+            /cms/render/live/%{attribute:siteDefaultLanguage}/sites/%{attribute:jahiaSiteKeyForCurrentServerName}/securitytxt.signature.txt
+        </to>
     </rule>
 </urlrewrite>

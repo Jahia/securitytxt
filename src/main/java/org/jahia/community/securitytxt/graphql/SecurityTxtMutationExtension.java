@@ -1,18 +1,14 @@
 package org.jahia.community.securitytxt.graphql;
 
-import graphql.annotations.annotationTypes.GraphQLDescription;
-import graphql.annotations.annotationTypes.GraphQLField;
-import graphql.annotations.annotationTypes.GraphQLName;
-import graphql.annotations.annotationTypes.GraphQLNonNull;
-import graphql.annotations.annotationTypes.GraphQLTypeExtension;
+import graphql.annotations.annotationTypes.*;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
@@ -105,7 +101,7 @@ public class SecurityTxtMutationExtension {
     }
 
     private static void setRefProp(JCRSessionWrapper session, JCRNodeWrapper node,
-            String propName, String uuid) throws RepositoryException {
+                                   String propName, String uuid) throws RepositoryException {
         if (StringUtils.isNotBlank(uuid)) {
             try {
                 final JCRNodeWrapper refNode = session.getNodeByIdentifier(uuid);

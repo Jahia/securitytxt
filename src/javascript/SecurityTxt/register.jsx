@@ -14,7 +14,7 @@ function SecurityTxtSettingsRoute(props) {
         return <div>No site selected.</div>;
     }
     console.debug('%c security.txt: site key %s', 'color: #463CBA', siteKey);
-    return <SecurityTxtSettings siteKey={siteKey} />;
+    return <SecurityTxtSettings siteKey={siteKey}/>;
 }
 
 export default () => {

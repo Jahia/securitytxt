@@ -23,12 +23,12 @@ public class GqlSecurityTxt {
     private final String preferredLanguages;
 
     public GqlSecurityTxt(String siteKey, String contact, String expires,
-            String acknowledgments, String acknowledgmentsUrl,
-            String canonical,
-            String encryption, String encryptionUrl,
-            String hiring, String hiringUrl,
-            String policy, String policyUrl,
-            String preferredLanguages) {
+                          String acknowledgments, String acknowledgmentsUrl,
+                          String canonical,
+                          String encryption, String encryptionUrl,
+                          String hiring, String hiringUrl,
+                          String policy, String policyUrl,
+                          String preferredLanguages) {
         this.siteKey = siteKey;
         this.contact = contact;
         this.expires = expires;
