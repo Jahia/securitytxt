@@ -12,22 +12,35 @@ public class GqlSecurityTxt {
     private final String contact;
     private final String expires;
     private final String acknowledgments;
+    private final String acknowledgmentsUrl;
     private final String canonical;
     private final String encryption;
+    private final String encryptionUrl;
     private final String hiring;
+    private final String hiringUrl;
     private final String policy;
+    private final String policyUrl;
     private final String preferredLanguages;
 
-    public GqlSecurityTxt(String siteKey, String contact, String expires, String acknowledgments,
-            String canonical, String encryption, String hiring, String policy, String preferredLanguages) {
+    public GqlSecurityTxt(String siteKey, String contact, String expires,
+            String acknowledgments, String acknowledgmentsUrl,
+            String canonical,
+            String encryption, String encryptionUrl,
+            String hiring, String hiringUrl,
+            String policy, String policyUrl,
+            String preferredLanguages) {
         this.siteKey = siteKey;
         this.contact = contact;
         this.expires = expires;
         this.acknowledgments = acknowledgments;
+        this.acknowledgmentsUrl = acknowledgmentsUrl;
         this.canonical = canonical;
         this.encryption = encryption;
+        this.encryptionUrl = encryptionUrl;
         this.hiring = hiring;
+        this.hiringUrl = hiringUrl;
         this.policy = policy;
+        this.policyUrl = policyUrl;
         this.preferredLanguages = preferredLanguages;
     }
 
@@ -56,6 +69,12 @@ public class GqlSecurityTxt {
     }
 
     @GraphQLField
+    @GraphQLDescription("Hardcoded URL for the acknowledgments page")
+    public String getAcknowledgmentsUrl() {
+        return acknowledgmentsUrl;
+    }
+
+    @GraphQLField
     @GraphQLDescription("The canonical URL of this security.txt file")
     public String getCanonical() {
         return canonical;
@@ -68,15 +87,33 @@ public class GqlSecurityTxt {
     }
 
     @GraphQLField
+    @GraphQLDescription("Hardcoded URL for the PGP key file")
+    public String getEncryptionUrl() {
+        return encryptionUrl;
+    }
+
+    @GraphQLField
     @GraphQLDescription("UUID of the hiring/careers page node")
     public String getHiring() {
         return hiring;
     }
 
     @GraphQLField
+    @GraphQLDescription("Hardcoded URL for the hiring/careers page")
+    public String getHiringUrl() {
+        return hiringUrl;
+    }
+
+    @GraphQLField
     @GraphQLDescription("UUID of the security policy page node")
     public String getPolicy() {
         return policy;
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Hardcoded URL for the security policy page")
+    public String getPolicyUrl() {
+        return policyUrl;
     }
 
     @GraphQLField

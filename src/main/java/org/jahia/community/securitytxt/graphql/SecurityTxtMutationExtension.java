@@ -35,10 +35,14 @@ public class SecurityTxtMutationExtension {
             @GraphQLName("contact") final String contact,
             @GraphQLName("expires") final String expires,
             @GraphQLName("acknowledgments") final String acknowledgments,
+            @GraphQLName("acknowledgmentsUrl") final String acknowledgmentsUrl,
             @GraphQLName("canonical") final String canonical,
             @GraphQLName("encryption") final String encryption,
+            @GraphQLName("encryptionUrl") final String encryptionUrl,
             @GraphQLName("hiring") final String hiring,
+            @GraphQLName("hiringUrl") final String hiringUrl,
             @GraphQLName("policy") final String policy,
+            @GraphQLName("policyUrl") final String policyUrl,
             @GraphQLName("preferredLanguages") final String preferredLanguages) {
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<GqlSecurityTxt>() {
@@ -64,16 +68,25 @@ public class SecurityTxtMutationExtension {
                     setStringProp(node, "contact", contact);
                     setStringProp(node, "expires", expires);
                     setRefProp(session, node, "acknowledgments", acknowledgments);
+                    setStringProp(node, "acknowledgmentsUrl", acknowledgmentsUrl);
                     setStringProp(node, "canonical", canonical);
                     setRefProp(session, node, "encryption", encryption);
+                    setStringProp(node, "encryptionUrl", encryptionUrl);
                     setRefProp(session, node, "hiring", hiring);
+                    setStringProp(node, "hiringUrl", hiringUrl);
                     setRefProp(session, node, "policy", policy);
+                    setStringProp(node, "policyUrl", policyUrl);
                     setStringProp(node, "preferredLanguages", preferredLanguages);
 
                     session.save();
 
-                    return new GqlSecurityTxt(siteKey, contact, expires, acknowledgments,
-                            canonical, encryption, hiring, policy, preferredLanguages);
+                    return new GqlSecurityTxt(siteKey, contact, expires,
+                            acknowledgments, acknowledgmentsUrl,
+                            canonical,
+                            encryption, encryptionUrl,
+                            hiring, hiringUrl,
+                            policy, policyUrl,
+                            preferredLanguages);
                 }
             });
         } catch (RepositoryException e) {

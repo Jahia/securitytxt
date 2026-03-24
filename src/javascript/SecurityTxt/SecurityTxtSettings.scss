@@ -97,6 +97,12 @@
     }
 }
 
+.securitytxt_mode_toggle {
+    display: flex;
+    gap: var(--spacing-small, 8px);
+    margin-bottom: var(--spacing-small, 8px);
+}
+
 .securitytxt_add_fields {
     padding: var(--spacing-small, 8px) 0;
     border-top: 1px solid var(--color-gray_light, #dadada);

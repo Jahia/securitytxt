@@ -7,10 +7,14 @@ export const GET_SECURITY_TXT_SETTINGS = gql`
             contact
             expires
             acknowledgments
+            acknowledgmentsUrl
             canonical
             encryption
+            encryptionUrl
             hiring
+            hiringUrl
             policy
+            policyUrl
             preferredLanguages
         }
     }
@@ -56,10 +60,14 @@ export const UPDATE_SECURITY_TXT = gql`
         $contact: String
         $expires: String
         $acknowledgments: String
+        $acknowledgmentsUrl: String
         $canonical: String
         $encryption: String
+        $encryptionUrl: String
         $hiring: String
+        $hiringUrl: String
         $policy: String
+        $policyUrl: String
         $preferredLanguages: String
     ) {
         updateSecurityTxt(
@@ -67,20 +75,28 @@ export const UPDATE_SECURITY_TXT = gql`
             contact: $contact
             expires: $expires
             acknowledgments: $acknowledgments
+            acknowledgmentsUrl: $acknowledgmentsUrl
             canonical: $canonical
             encryption: $encryption
+            encryptionUrl: $encryptionUrl
             hiring: $hiring
+            hiringUrl: $hiringUrl
             policy: $policy
+            policyUrl: $policyUrl
             preferredLanguages: $preferredLanguages
         ) {
             siteKey
             contact
             expires
             acknowledgments
+            acknowledgmentsUrl
             canonical
             encryption
+            encryptionUrl
             hiring
+            hiringUrl
             policy
+            policyUrl
             preferredLanguages
         }
     }

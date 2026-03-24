@@ -48,10 +48,18 @@ export function SecurityTxtSettings({siteKey}) {
     const [contact, setContact] = useState('');
     const [expires, setExpires] = useState('');
     const [acknowledgments, setAcknowledgments] = useState(null);
+    const [acknowledgmentsUrl, setAcknowledgmentsUrl] = useState('');
+    const [acknowledgmentsMode, setAcknowledgmentsMode] = useState('node');
     const [canonical, setCanonical] = useState('');
     const [encryption, setEncryption] = useState(null);
+    const [encryptionUrl, setEncryptionUrl] = useState('');
+    const [encryptionMode, setEncryptionMode] = useState('node');
     const [hiring, setHiring] = useState(null);
+    const [hiringUrl, setHiringUrl] = useState('');
+    const [hiringMode, setHiringMode] = useState('node');
     const [policy, setPolicy] = useState(null);
+    const [policyUrl, setPolicyUrl] = useState('');
+    const [policyMode, setPolicyMode] = useState('node');
     const [preferredLanguages, setPreferredLanguages] = useState('');
     const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
     const [visibleFields, setVisibleFields] = useState(new Set());
@@ -79,13 +87,21 @@ export function SecurityTxtSettings({siteKey}) {
         setContact(s.contact || '');
         setExpires(toDatetimeLocal(s.expires));
         setAcknowledgments(s.acknowledgments || null);
+        setAcknowledgmentsUrl(s.acknowledgmentsUrl || '');
+        setAcknowledgmentsMode(s.acknowledgmentsUrl ? 'url' : 'node');
         setCanonical(s.canonical || '');
         setEncryption(s.encryption || null);
+        setEncryptionUrl(s.encryptionUrl || '');
+        setEncryptionMode(s.encryptionUrl ? 'url' : 'node');
         setHiring(s.hiring || null);
+        setHiringUrl(s.hiringUrl || '');
+        setHiringMode(s.hiringUrl ? 'url' : 'node');
         setPolicy(s.policy || null);
+        setPolicyUrl(s.policyUrl || '');
+        setPolicyMode(s.policyUrl ? 'url' : 'node');
         setPreferredLanguages(s.preferredLanguages || '');
         const visible = new Set();
-        if (s.acknowledgments) {
+        if (s.acknowledgments || s.acknowledgmentsUrl) {
             visible.add('acknowledgments');
         }
 
@@ -93,15 +109,15 @@ export function SecurityTxtSettings({siteKey}) {
             visible.add('canonical');
         }
 
-        if (s.encryption) {
+        if (s.encryption || s.encryptionUrl) {
             visible.add('encryption');
         }
 
-        if (s.hiring) {
+        if (s.hiring || s.hiringUrl) {
             visible.add('hiring');
         }
 
-        if (s.policy) {
+        if (s.policy || s.policyUrl) {
             visible.add('policy');
         }
 
@@ -126,11 +142,15 @@ export function SecurityTxtSettings({siteKey}) {
                     siteKey,
                     contact: contact || null,
                     expires: toRfc3339(expires) || null,
-                    acknowledgments,
+                    acknowledgments: acknowledgmentsMode === 'node' ? acknowledgments : null,
+                    acknowledgmentsUrl: acknowledgmentsMode === 'url' ? (acknowledgmentsUrl || null) : null,
                     canonical: canonical || null,
-                    encryption,
-                    hiring,
-                    policy,
+                    encryption: encryptionMode === 'node' ? encryption : null,
+                    encryptionUrl: encryptionMode === 'url' ? (encryptionUrl || null) : null,
+                    hiring: hiringMode === 'node' ? hiring : null,
+                    hiringUrl: hiringMode === 'url' ? (hiringUrl || null) : null,
+                    policy: policyMode === 'node' ? policy : null,
+                    policyUrl: policyMode === 'url' ? (policyUrl || null) : null,
                     preferredLanguages: preferredLanguages || null
                 }
             });
@@ -215,14 +235,41 @@ export function SecurityTxtSettings({siteKey}) {
                     </Field>
 
                     {visibleFields.has('acknowledgments') && (
-                        <NodePicker
-                            label={t('label.acknowledgments')}
-                            siteKey={siteKey}
-                            query={GET_SECURITY_TXT_PAGES}
-                            resultKey="securityTxtPages"
-                            value={acknowledgments}
-                            onChange={setAcknowledgments}
-                        />
+                        <div>
+                            <div className={styles.securitytxt_mode_toggle}>
+                                <Button
+                                    label={t('label.mode.internal')}
+                                    variant={acknowledgmentsMode === 'node' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setAcknowledgmentsMode('node')}
+                                />
+                                <Button
+                                    label={t('label.mode.external')}
+                                    variant={acknowledgmentsMode === 'url' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setAcknowledgmentsMode('url')}
+                                />
+                            </div>
+                            {acknowledgmentsMode === 'node' ? (
+                                <NodePicker
+                                    label={t('label.acknowledgments')}
+                                    siteKey={siteKey}
+                                    query={GET_SECURITY_TXT_PAGES}
+                                    resultKey="securityTxtPages"
+                                    value={acknowledgments}
+                                    onChange={setAcknowledgments}
+                                />
+                            ) : (
+                                <Field label={t('label.acknowledgments')} id="securitytxt-acknowledgmentsUrl">
+                                    <Input
+                                        id="securitytxt-acknowledgmentsUrl"
+                                        value={acknowledgmentsUrl}
+                                        onChange={e => setAcknowledgmentsUrl(e.target.value)}
+                                        placeholder="https://example.com/security/acknowledgments"
+                                    />
+                                </Field>
+                            )}
+                        </div>
                     )}
 
                     {visibleFields.has('canonical') && (
@@ -237,36 +284,117 @@ export function SecurityTxtSettings({siteKey}) {
                     )}
 
                     {visibleFields.has('encryption') && (
-                        <NodePicker
-                            label={t('label.encryption')}
-                            siteKey={siteKey}
-                            query={GET_SECURITY_TXT_FILES}
-                            resultKey="securityTxtFiles"
-                            value={encryption}
-                            onChange={setEncryption}
-                        />
+                        <div>
+                            <div className={styles.securitytxt_mode_toggle}>
+                                <Button
+                                    label={t('label.mode.internal')}
+                                    variant={encryptionMode === 'node' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setEncryptionMode('node')}
+                                />
+                                <Button
+                                    label={t('label.mode.external')}
+                                    variant={encryptionMode === 'url' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setEncryptionMode('url')}
+                                />
+                            </div>
+                            {encryptionMode === 'node' ? (
+                                <NodePicker
+                                    label={t('label.encryption')}
+                                    siteKey={siteKey}
+                                    query={GET_SECURITY_TXT_FILES}
+                                    resultKey="securityTxtFiles"
+                                    value={encryption}
+                                    onChange={setEncryption}
+                                />
+                            ) : (
+                                <Field label={t('label.encryption')} id="securitytxt-encryptionUrl">
+                                    <Input
+                                        id="securitytxt-encryptionUrl"
+                                        value={encryptionUrl}
+                                        onChange={e => setEncryptionUrl(e.target.value)}
+                                        placeholder="https://example.com/pgp-key.txt"
+                                    />
+                                </Field>
+                            )}
+                        </div>
                     )}
 
                     {visibleFields.has('hiring') && (
-                        <NodePicker
-                            label={t('label.hiring')}
-                            siteKey={siteKey}
-                            query={GET_SECURITY_TXT_PAGES}
-                            resultKey="securityTxtPages"
-                            value={hiring}
-                            onChange={setHiring}
-                        />
+                        <div>
+                            <div className={styles.securitytxt_mode_toggle}>
+                                <Button
+                                    label={t('label.mode.internal')}
+                                    variant={hiringMode === 'node' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setHiringMode('node')}
+                                />
+                                <Button
+                                    label={t('label.mode.external')}
+                                    variant={hiringMode === 'url' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setHiringMode('url')}
+                                />
+                            </div>
+                            {hiringMode === 'node' ? (
+                                <NodePicker
+                                    label={t('label.hiring')}
+                                    siteKey={siteKey}
+                                    query={GET_SECURITY_TXT_PAGES}
+                                    resultKey="securityTxtPages"
+                                    value={hiring}
+                                    onChange={setHiring}
+                                />
+                            ) : (
+                                <Field label={t('label.hiring')} id="securitytxt-hiringUrl">
+                                    <Input
+                                        id="securitytxt-hiringUrl"
+                                        value={hiringUrl}
+                                        onChange={e => setHiringUrl(e.target.value)}
+                                        placeholder="https://example.com/careers"
+                                    />
+                                </Field>
+                            )}
+                        </div>
                     )}
 
                     {visibleFields.has('policy') && (
-                        <NodePicker
-                            label={t('label.policy')}
-                            siteKey={siteKey}
-                            query={GET_SECURITY_TXT_PAGES}
-                            resultKey="securityTxtPages"
-                            value={policy}
-                            onChange={setPolicy}
-                        />
+                        <div>
+                            <div className={styles.securitytxt_mode_toggle}>
+                                <Button
+                                    label={t('label.mode.internal')}
+                                    variant={policyMode === 'node' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setPolicyMode('node')}
+                                />
+                                <Button
+                                    label={t('label.mode.external')}
+                                    variant={policyMode === 'url' ? 'primary' : 'secondary'}
+                                    size="small"
+                                    onClick={() => setPolicyMode('url')}
+                                />
+                            </div>
+                            {policyMode === 'node' ? (
+                                <NodePicker
+                                    label={t('label.policy')}
+                                    siteKey={siteKey}
+                                    query={GET_SECURITY_TXT_PAGES}
+                                    resultKey="securityTxtPages"
+                                    value={policy}
+                                    onChange={setPolicy}
+                                />
+                            ) : (
+                                <Field label={t('label.policy')} id="securitytxt-policyUrl">
+                                    <Input
+                                        id="securitytxt-policyUrl"
+                                        value={policyUrl}
+                                        onChange={e => setPolicyUrl(e.target.value)}
+                                        placeholder="https://example.com/security/policy"
+                                    />
+                                </Field>
+                            )}
+                        </div>
                     )}
 
                     {visibleFields.has('preferredLanguages') && (

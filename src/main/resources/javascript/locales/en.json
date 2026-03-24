@@ -10,6 +10,10 @@
     "policy": "Security policy page",
     "preferredLanguages": "Preferred languages",
     "addField": "Add optional field",
+    "mode": {
+      "internal": "Internal",
+      "external": "External URL"
+    },
     "update": "Save",
     "cancel": "Cancel",
     "saving": "Saving…",
