@@ -97,6 +97,24 @@
     }
 }
 
+.securitytxt_add_fields {
+    padding: var(--spacing-small, 8px) 0;
+    border-top: 1px solid var(--color-gray_light, #dadada);
+}
+
+.securitytxt_add_fields_label {
+    display: block;
+    margin-bottom: var(--spacing-small, 8px);
+    color: var(--color-gray, #7a7f88);
+    font-size: 12px;
+}
+
+.securitytxt_add_fields_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-small, 8px);
+}
+
 .securitytxt_actions {
     display: flex;
     gap: var(--spacing-small, 8px);

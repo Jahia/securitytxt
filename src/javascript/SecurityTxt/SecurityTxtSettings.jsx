@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {useTranslation} from 'react-i18next';
-import {Button, Field, Input} from '@jahia/moonstone';
+import {Button, Field, Input, Typography} from '@jahia/moonstone';
 import styles from './SecurityTxtSettings.scss';
 import {
     GET_SECURITY_TXT_FILES,
@@ -54,6 +54,16 @@ export function SecurityTxtSettings({siteKey}) {
     const [policy, setPolicy] = useState(null);
     const [preferredLanguages, setPreferredLanguages] = useState('');
     const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
+    const [visibleFields, setVisibleFields] = useState(new Set());
+
+    const OPTIONAL_FIELDS = [
+        {key: 'acknowledgments', labelKey: 'label.acknowledgments'},
+        {key: 'canonical', labelKey: 'label.canonical'},
+        {key: 'encryption', labelKey: 'label.encryption'},
+        {key: 'hiring', labelKey: 'label.hiring'},
+        {key: 'policy', labelKey: 'label.policy'},
+        {key: 'preferredLanguages', labelKey: 'label.preferredLanguages'}
+    ];
 
     console.debug('%c security.txt: retrieving settings for %s', 'color: #463CBA', siteKey);
     const {data: settingsData, loading: settingsLoading, error: settingsError} = useQuery(
@@ -65,17 +75,46 @@ export function SecurityTxtSettings({siteKey}) {
         refetchQueries: [{query: GET_SECURITY_TXT_SETTINGS, variables: {siteKey}}]
     });
 
+    const syncFromSettings = s => {
+        setContact(s.contact || '');
+        setExpires(toDatetimeLocal(s.expires));
+        setAcknowledgments(s.acknowledgments || null);
+        setCanonical(s.canonical || '');
+        setEncryption(s.encryption || null);
+        setHiring(s.hiring || null);
+        setPolicy(s.policy || null);
+        setPreferredLanguages(s.preferredLanguages || '');
+        const visible = new Set();
+        if (s.acknowledgments) {
+            visible.add('acknowledgments');
+        }
+
+        if (s.canonical) {
+            visible.add('canonical');
+        }
+
+        if (s.encryption) {
+            visible.add('encryption');
+        }
+
+        if (s.hiring) {
+            visible.add('hiring');
+        }
+
+        if (s.policy) {
+            visible.add('policy');
+        }
+
+        if (s.preferredLanguages) {
+            visible.add('preferredLanguages');
+        }
+
+        setVisibleFields(visible);
+    };
+
     useEffect(() => {
         if (settingsData && settingsData.securityTxtSettings) {
-            const s = settingsData.securityTxtSettings;
-            setContact(s.contact || '');
-            setExpires(toDatetimeLocal(s.expires));
-            setAcknowledgments(s.acknowledgments || null);
-            setCanonical(s.canonical || '');
-            setEncryption(s.encryption || null);
-            setHiring(s.hiring || null);
-            setPolicy(s.policy || null);
-            setPreferredLanguages(s.preferredLanguages || '');
+            syncFromSettings(settingsData.securityTxtSettings);
         }
     }, [settingsData]);
 
@@ -108,15 +147,7 @@ export function SecurityTxtSettings({siteKey}) {
 
     const handleCancel = () => {
         if (settingsData && settingsData.securityTxtSettings) {
-            const s = settingsData.securityTxtSettings;
-            setContact(s.contact || '');
-            setExpires(toDatetimeLocal(s.expires));
-            setAcknowledgments(s.acknowledgments || null);
-            setCanonical(s.canonical || '');
-            setEncryption(s.encryption || null);
-            setHiring(s.hiring || null);
-            setPolicy(s.policy || null);
-            setPreferredLanguages(s.preferredLanguages || '');
+            syncFromSettings(settingsData.securityTxtSettings);
         }
         setSaveStatus(null);
     };
@@ -183,59 +214,90 @@ export function SecurityTxtSettings({siteKey}) {
                         />
                     </Field>
 
-                    <NodePicker
-                        label={t('label.acknowledgments')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_PAGES}
-                        resultKey="securityTxtPages"
-                        value={acknowledgments}
-                        onChange={setAcknowledgments}
-                    />
-
-                    <Field label={t('label.canonical')} id="securitytxt-canonical">
-                        <Input
-                            id="securitytxt-canonical"
-                            value={canonical}
-                            onChange={e => setCanonical(e.target.value)}
-                            placeholder="https://example.com/.well-known/security.txt"
+                    {visibleFields.has('acknowledgments') && (
+                        <NodePicker
+                            label={t('label.acknowledgments')}
+                            siteKey={siteKey}
+                            query={GET_SECURITY_TXT_PAGES}
+                            resultKey="securityTxtPages"
+                            value={acknowledgments}
+                            onChange={setAcknowledgments}
                         />
-                    </Field>
+                    )}
 
-                    <NodePicker
-                        label={t('label.encryption')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_FILES}
-                        resultKey="securityTxtFiles"
-                        value={encryption}
-                        onChange={setEncryption}
-                    />
+                    {visibleFields.has('canonical') && (
+                        <Field label={t('label.canonical')} id="securitytxt-canonical">
+                            <Input
+                                id="securitytxt-canonical"
+                                value={canonical}
+                                onChange={e => setCanonical(e.target.value)}
+                                placeholder="https://example.com/.well-known/security.txt"
+                            />
+                        </Field>
+                    )}
 
-                    <NodePicker
-                        label={t('label.hiring')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_PAGES}
-                        resultKey="securityTxtPages"
-                        value={hiring}
-                        onChange={setHiring}
-                    />
-
-                    <NodePicker
-                        label={t('label.policy')}
-                        siteKey={siteKey}
-                        query={GET_SECURITY_TXT_PAGES}
-                        resultKey="securityTxtPages"
-                        value={policy}
-                        onChange={setPolicy}
-                    />
-
-                    <Field label={t('label.preferredLanguages')} id="securitytxt-preferredLanguages">
-                        <Input
-                            id="securitytxt-preferredLanguages"
-                            value={preferredLanguages}
-                            onChange={e => setPreferredLanguages(e.target.value)}
-                            placeholder="en, fr"
+                    {visibleFields.has('encryption') && (
+                        <NodePicker
+                            label={t('label.encryption')}
+                            siteKey={siteKey}
+                            query={GET_SECURITY_TXT_FILES}
+                            resultKey="securityTxtFiles"
+                            value={encryption}
+                            onChange={setEncryption}
                         />
-                    </Field>
+                    )}
+
+                    {visibleFields.has('hiring') && (
+                        <NodePicker
+                            label={t('label.hiring')}
+                            siteKey={siteKey}
+                            query={GET_SECURITY_TXT_PAGES}
+                            resultKey="securityTxtPages"
+                            value={hiring}
+                            onChange={setHiring}
+                        />
+                    )}
+
+                    {visibleFields.has('policy') && (
+                        <NodePicker
+                            label={t('label.policy')}
+                            siteKey={siteKey}
+                            query={GET_SECURITY_TXT_PAGES}
+                            resultKey="securityTxtPages"
+                            value={policy}
+                            onChange={setPolicy}
+                        />
+                    )}
+
+                    {visibleFields.has('preferredLanguages') && (
+                        <Field label={t('label.preferredLanguages')} id="securitytxt-preferredLanguages">
+                            <Input
+                                id="securitytxt-preferredLanguages"
+                                value={preferredLanguages}
+                                onChange={e => setPreferredLanguages(e.target.value)}
+                                placeholder="en, fr"
+                            />
+                        </Field>
+                    )}
+
+                    {OPTIONAL_FIELDS.some(f => !visibleFields.has(f.key)) && (
+                        <div className={styles.securitytxt_add_fields}>
+                            <Typography variant="caption" className={styles.securitytxt_add_fields_label}>
+                                {t('label.addField')}
+                            </Typography>
+                            <div className={styles.securitytxt_add_fields_buttons}>
+                                {OPTIONAL_FIELDS.filter(f => !visibleFields.has(f.key)).map(f => (
+                                    <Button
+                                        key={f.key}
+                                        label={`+ ${t(f.labelKey)}`}
+                                        variant="ghost"
+                                        size="small"
+                                        onClick={() => setVisibleFields(prev => new Set([...prev, f.key]))}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <div className={styles.securitytxt_actions}>
                         <Button
