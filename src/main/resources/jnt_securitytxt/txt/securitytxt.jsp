@@ -20,34 +20,34 @@
 <%--@elvariable id="issueTemplate" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="issue" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <c:set target="${renderContext}" property="contentType" value="text/plain;charset=UTF-8"/>
-<c:if test="${currentNode.properties['contact'] ne ''}">
+<c:if test="${not empty currentNode.properties['contact']}">
 Contact: ${currentNode.properties['contact']}
 </c:if>
 
-<c:if test="${currentNode.properties['expires'] ne ''}">
+<c:if test="${not empty currentNode.properties['expires']}">
 Expires: ${currentNode.properties['expires']}
 </c:if>
 
-<c:if test="${currentNode.properties['acknowledgments'] ne ''}">
+<c:if test="${not empty currentNode.properties['acknowledgments']}">
 Acknowledgments: ${url.server}<c:url value="${currentNode.properties['acknowledgments'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['canonical'] ne ''}">
+<c:if test="${not empty currentNode.properties['canonical']}">
 Canonical: ${currentNode.properties['canonical']}
 </c:if>
 
-<c:if test="${currentNode.properties['encryption'] ne ''}">
+<c:if test="${not empty currentNode.properties['encryption']}">
 Encryption: ${url.server}<c:url value="${currentNode.properties['encryption'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['hiring'] ne ''}">
+<c:if test="${not empty currentNode.properties['hiring']}">
 Hiring: ${url.server}<c:url value="${currentNode.properties['hiring'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['policy'] ne ''}">
+<c:if test="${not empty currentNode.properties['policy']}">
 Policy: ${url.server}<c:url value="${currentNode.properties['policy'].node.url}"/>
 </c:if>
 
-<c:if test="${currentNode.properties['preferredLanguages'] ne ''}">
+<c:if test="${not empty currentNode.properties['preferredLanguages']}">
 Preferred-Languages: ${currentNode.properties['preferredLanguages']}
 </c:if>
