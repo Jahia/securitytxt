@@ -21,53 +21,53 @@
 <%--@elvariable id="issue" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <c:set target="${renderContext}" property="contentType" value="text/plain;charset=UTF-8"/>
 <c:if test="${not empty currentNode.properties['contact']}">
-    Contact: ${currentNode.properties['contact']}
+Contact: ${currentNode.properties['contact']}
 </c:if>
 
 <c:if test="${not empty currentNode.properties['expires']}">
-    Expires: ${currentNode.properties['expires']}
+Expires: ${currentNode.properties['expires']}
 </c:if>
 
 <c:choose>
     <c:when test="${not empty currentNode.properties['acknowledgmentsUrl']}">
-        Acknowledgments: ${currentNode.properties['acknowledgmentsUrl']}
+Acknowledgments: ${currentNode.properties['acknowledgmentsUrl']}
     </c:when>
     <c:when test="${not empty currentNode.properties['acknowledgments']}">
-        Acknowledgments: ${url.server}<c:url value="${currentNode.properties['acknowledgments'].node.url}"/>
+Acknowledgments: ${url.server}<c:url value="${currentNode.properties['acknowledgments'].node.url}"/>
     </c:when>
 </c:choose>
 
 <c:if test="${not empty currentNode.properties['canonical']}">
-    Canonical: ${currentNode.properties['canonical']}
+Canonical: ${currentNode.properties['canonical']}
 </c:if>
 
 <c:choose>
     <c:when test="${not empty currentNode.properties['encryptionUrl']}">
-        Encryption: ${currentNode.properties['encryptionUrl']}
+Encryption: ${currentNode.properties['encryptionUrl']}
     </c:when>
     <c:when test="${not empty currentNode.properties['encryption']}">
-        Encryption: ${url.server}<c:url value="${currentNode.properties['encryption'].node.url}"/>
+Encryption: ${url.server}<c:url value="${currentNode.properties['encryption'].node.url}"/>
     </c:when>
 </c:choose>
 
 <c:choose>
     <c:when test="${not empty currentNode.properties['hiringUrl']}">
-        Hiring: ${currentNode.properties['hiringUrl']}
+Hiring: ${currentNode.properties['hiringUrl']}
     </c:when>
     <c:when test="${not empty currentNode.properties['hiring']}">
-        Hiring: ${url.server}<c:url value="${currentNode.properties['hiring'].node.url}"/>
+Hiring: ${url.server}<c:url value="${currentNode.properties['hiring'].node.url}"/>
     </c:when>
 </c:choose>
 
 <c:choose>
     <c:when test="${not empty currentNode.properties['policyUrl']}">
-        Policy: ${currentNode.properties['policyUrl']}
+Policy: ${currentNode.properties['policyUrl']}
     </c:when>
     <c:when test="${not empty currentNode.properties['policy']}">
-        Policy: ${url.server}<c:url value="${currentNode.properties['policy'].node.url}"/>
+Policy: ${url.server}<c:url value="${currentNode.properties['policy'].node.url}"/>
     </c:when>
 </c:choose>
 
 <c:if test="${not empty currentNode.properties['preferredLanguages']}">
-    Preferred-Languages: ${currentNode.properties['preferredLanguages']}
+Preferred-Languages: ${currentNode.properties['preferredLanguages']}
 </c:if>
