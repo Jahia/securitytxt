@@ -1,0 +1,28 @@
+- addMavenRepository: 'https://devtools.jahia.com/nexus/content/groups/public/'
+- installBundle:
+      - 'mvn:org.jahia.modules/press'
+      - 'mvn:org.jahia.modules/person'
+      - 'mvn:org.jahia.modules/news'
+      - 'mvn:org.jahia.modules/font-awesome'
+      - 'mvn:org.jahia.modules/calendar'
+      - 'mvn:org.jahia.modules/bootstrap3-core'
+      - 'mvn:org.jahia.modules/bootstrap3-components'
+      - 'mvn:org.jahia.modules/location'
+      - 'mvn:org.jahia.modules/topstories'
+      - 'mvn:org.jahia.modules/rating'
+      - 'mvn:org.jahia.modules/event'
+      - 'mvn:org.jahia.modules/bookmarks'
+      - 'mvn:org.jahia.modules/dx-base-demo-core'
+      - 'mvn:org.jahia.modules/dx-base-demo-templates'
+      - 'mvn:org.jahia.modules/dx-base-demo-components'
+      - 'mvn:org.jahia.modules/digitall/2.3.0'
+  autoStart: true
+  uninstallPreviousVersion: true
+- importSite: jar:mvn:org.jahia.modules/digitall/2.3.0/zip/import!/Digitall.zip
+- import: jar:mvn:org.jahia.modules/digitall/2.3.0/zip/import!/users.zip
+
+- installBundle:
+  - 'mvn:org.jahia.modules/graphql-dxm-provider'
+  - 'mvn:org.jahia.community/securitytxt'
+  autoStart: true
+  uninstallPreviousVersion: true
