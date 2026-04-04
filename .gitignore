@@ -20,3 +20,4 @@ yarn-error.log
 .yarn-integrity
 # Webpack chunks (only the main bundle is committed)
 src/main/resources/javascript/apps
+.env
