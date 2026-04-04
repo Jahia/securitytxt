@@ -6,6 +6,7 @@ source ./set-env.sh
 
 #!/usr/bin/env bash
 START_TIME=$SECONDS
+export NODE_OPTIONS=--openssl-legacy-provider
 
 echo " == Using MANIFEST: ${MANIFEST}"
 echo " == Using JAHIA_URL= ${JAHIA_URL}"
@@ -30,8 +31,7 @@ else
   curl ${MANIFEST} --output ./run-artifacts/curl-manifest
   MANIFEST="curl-manifest"
 fi
-sed -i -e "s/NEXUS_USERNAME/$(echo ${NEXUS_USERNAME} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" ./run-artifacts/${MANIFEST}
-sed -i -e "s/NEXUS_PASSWORD/$(echo ${NEXUS_PASSWORD} | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" ./run-artifacts/${MANIFEST}
+
 sed -i "" -e "s/JAHIA_VERSION/${JAHIA_VERSION}/g" ./run-artifacts/${MANIFEST}
 
 echo "$(date +'%d %B %Y - %k:%M') == Executing manifest: ${MANIFEST} =="
