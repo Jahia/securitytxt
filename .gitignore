@@ -22,5 +22,5 @@ yarn-error.log
 src/main/resources/javascript/apps
 
 .env
-.yarn/install-state.gz
+**/install-state.gz
 

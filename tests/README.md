@@ -125,10 +125,13 @@ As a reminder, the purpose of the `env.run.sh` script is to provision the enviro
 # Fetch the necessary javascript dependencies
 > yarn
 # Run the docker environment, but without the tests
-> bash ci.startup.sh notests
+> ./ci.startup.sh notests
 # Provision the environment and run the tests in headless once
-> bash env.run.sh
-> source set-env.sh
+> ./env.run.sh
+# For bash
+> ./set-env.sh
+# For fish
+> ./set-env.fish
 > yarn run e2e:debug
 ```
 
