@@ -33,8 +33,6 @@ As a reminder, the purpose of the `env.run.sh` script is to provision the enviro
 > ./env.run.sh
 # For bash
 > ./set-env.sh
-# For fish
-> ./set-env.fish
 > yarn run e2e:debug
 ```
 

@@ -1,14 +1,14 @@
-version: '2.4'
 services:
     jahia:
         image: '${JAHIA_IMAGE}'
         container_name: jahia
-        mem_limit: 4gb
-        environment:
-            - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}        
-            - MAX_RAM_PERCENTAGE=95
         ports:
             - '8080:8080'
+            - '8000:8000'
+        environment:
+            - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}
+            - JAHIA_LICENSE=${JAHIA_LICENSE}
+            - JPDA=true
         extra_hosts:
             - jahia:127.0.0.1
         networks:
@@ -19,7 +19,6 @@ services:
         # https://github.com/cypress-io/cypress/issues/350
         ipc: host
         container_name: cypress
-        mem_limit: 4gb
         depends_on:
             - jahia
         environment:
