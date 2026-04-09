@@ -38,6 +38,10 @@ public class SecurityTxtQueryExtension {
                     if (!session.nodeExists(sitePath)) {
                         return null;
                     }
+                    final JCRSessionWrapper callerSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+                    if (!callerSession.nodeExists(sitePath) || !callerSession.getNode(sitePath).hasPermission("siteAdminSecurityTxt")) {
+                        throw new AccessDeniedException("siteAdminSecurityTxt");
+                    }
                     JCRNodeWrapper siteNode = session.getNode(sitePath);
                     if (!siteNode.hasNode(SECURITY_TXT)) {
                         return new GqlSecurityTxt(siteKey, null, null, null, null, null, null, null, null, null, null, null, null);
@@ -111,10 +115,11 @@ public class SecurityTxtQueryExtension {
         if (!session.nodeExists(sitePath)) {
             throw new RepositoryException("Site not found: " + siteKey);
         }
-        final JCRNodeWrapper siteNode = session.getNode(sitePath);
-        if (!siteNode.hasPermission("siteAdminSecurityTxt")) {
+        final JCRSessionWrapper callerSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+        if (!callerSession.nodeExists(sitePath) || !callerSession.getNode(sitePath).hasPermission("siteAdminSecurityTxt")) {
             throw new AccessDeniedException("siteAdminSecurityTxt");
         }
+        final JCRNodeWrapper siteNode = session.getNode(sitePath);
 
         final JCRNodeWrapper rootNode;
         try {

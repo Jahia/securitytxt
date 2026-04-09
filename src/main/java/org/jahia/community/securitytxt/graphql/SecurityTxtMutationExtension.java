@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.slf4j.Logger;
@@ -49,10 +50,11 @@ public class SecurityTxtMutationExtension {
                         throw new RepositoryException("Site not found: " + siteKey);
                     }
 
-                    final JCRNodeWrapper siteNode = session.getNode(sitePath);
-                    if (!siteNode.hasPermission("siteAdminSecurityTxt")) {
+                    final JCRSessionWrapper callerSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+                    if (!callerSession.nodeExists(sitePath) || !callerSession.getNode(sitePath).hasPermission("siteAdminSecurityTxt")) {
                         throw new AccessDeniedException("siteAdminSecurityTxt");
                     }
+                    final JCRNodeWrapper siteNode = session.getNode(sitePath);
 
                     final JCRNodeWrapper node;
                     if (siteNode.hasNode(SECURITY_TXT)) {
