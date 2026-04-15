@@ -20,10 +20,14 @@ import javax.jcr.RepositoryException;
 @GraphQLDescription("Security.txt management mutations")
 public class SecurityTxtMutationExtension {
 
+    private SecurityTxtMutationExtension() {
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtMutationExtension.class);
     private static final String SECURITY_TXT = "securitytxt";
     private static final String SECURITY_TXT_NODE_TYPE = "jnt:securitytxt";
 
+    @SuppressWarnings("java:S107")
     @GraphQLField
     @GraphQLName("updateSecurityTxt")
     @GraphQLDescription("Create or update the security.txt settings for a site")

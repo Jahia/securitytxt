@@ -22,6 +22,7 @@ public class GqlSecurityTxt {
     private final String policyUrl;
     private final String preferredLanguages;
 
+    @SuppressWarnings("java:S107")
     public GqlSecurityTxt(String siteKey, String contact, String expires,
                           String acknowledgments, String acknowledgmentsUrl,
                           String canonical,
