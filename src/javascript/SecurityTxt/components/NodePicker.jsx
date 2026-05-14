@@ -4,7 +4,7 @@ import {Dropdown, Field, SearchInput} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
 import {GET_NODE_BY_UUID} from '../SecurityTxtSettings.gql';
 
-export function NodePicker({label, siteKey, query, resultKey, value, onChange}) {
+export function NodePicker({label, fieldId, siteKey, query, resultKey, value, onChange}) {
     const {t} = useTranslation('securitytxt');
     const [searchTerm, setSearchTerm] = useState('');
     const [committedSearch, setCommittedSearch] = useState('');
@@ -49,9 +49,14 @@ export function NodePicker({label, siteKey, query, resultKey, value, onChange}) 
         setCommittedSearch('');
     };
 
+    const searchId = `${fieldId}-search`;
+    const dropdownId = `${fieldId}-dropdown`;
+
     return (
-        <Field label={label} id={`securitytxt-picker-${label}`}>
+        <Field label={label} id={searchId}>
             <SearchInput
+                id={searchId}
+                aria-label={t('label.picker.searchLabel', {field: label})}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -59,6 +64,8 @@ export function NodePicker({label, siteKey, query, resultKey, value, onChange}) 
                 placeholder={t('label.picker.search')}
             />
             <Dropdown
+                id={dropdownId}
+                aria-label={label}
                 data={dropdownData}
                 value={value || ''}
                 variant="outlined"

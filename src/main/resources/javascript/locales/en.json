@@ -18,9 +18,11 @@
     "cancel": "Cancel",
     "saving": "Saving…",
     "loading": "Loading…",
+    "opensInNewTab": "(opens in new tab)",
     "picker": {
       "noResults": "No results",
-      "search": "Search…"
+      "search": "Search…",
+      "searchLabel": "Search for {{field}}"
     }
   },
   "securitytxt": {

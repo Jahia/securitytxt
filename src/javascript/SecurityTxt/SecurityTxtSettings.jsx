@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {useTranslation} from 'react-i18next';
 import {Button, Field, Input, Typography} from '@jahia/moonstone';
@@ -63,6 +63,8 @@ export function SecurityTxtSettings({siteKey}) {
     const [preferredLanguages, setPreferredLanguages] = useState('');
     const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
     const [visibleFields, setVisibleFields] = useState(new Set());
+
+    const statusRef = useRef(null);
 
     const OPTIONAL_FIELDS = [
         {key: 'acknowledgments', labelKey: 'label.acknowledgments'},
@@ -163,22 +165,28 @@ export function SecurityTxtSettings({siteKey}) {
             console.error('Failed to update security.txt settings:', err);
             setSaveStatus('error');
         }
+
+        setTimeout(() => statusRef.current?.focus(), 50);
     };
 
     const handleCancel = () => {
         if (settingsData && settingsData.securityTxtSettings) {
             syncFromSettings(settingsData.securityTxtSettings);
         }
+
         setSaveStatus(null);
     };
 
+    const srLiveMsg = saveStatus === 'success' ? t('securitytxt.success.update') :
+        saveStatus === 'error' ? t('securitytxt.errors.update.failed') : '';
+
     if (settingsLoading) {
-        return <div className={styles.securitytxt_loading}>{t('label.loading')}</div>;
+        return <div className={styles.securitytxt_loading} role="status">{t('label.loading')}</div>;
     }
 
     if (settingsError) {
         return (
-            <div className={styles.securitytxt_error}>
+            <div className={styles.securitytxt_error} role="alert">
                 {t('securitytxt.errors.load.failed')}: {settingsError.message}
             </div>
         );
@@ -186,6 +194,18 @@ export function SecurityTxtSettings({siteKey}) {
 
     return (
         <div>
+            {/* Persistent live region — always in DOM so AT registers it before content changes */}
+            <div
+                ref={statusRef}
+                tabIndex={-1}
+                role={saveStatus === 'error' ? 'alert' : 'status'}
+                aria-live={saveStatus === 'error' ? 'assertive' : 'polite'}
+                aria-atomic="true"
+                className={styles.securitytxt_sr_only}
+            >
+                {srLiveMsg}
+            </div>
+
             <div className={styles.securitytxt_page_header}>
                 <h2>Security.txt - {siteKey}</h2>
             </div>
@@ -195,6 +215,7 @@ export function SecurityTxtSettings({siteKey}) {
                         {t('securitytxt.description')}{' '}
                         <a href="https://securitytxt.org/" target="_blank" rel="noreferrer">
                             security.txt
+                            <span className={styles.securitytxt_sr_only}>{t('label.opensInNewTab')}</span>
                         </a>
                     </p>
                     <p>
@@ -204,12 +225,12 @@ export function SecurityTxtSettings({siteKey}) {
                 </div>
 
                 {saveStatus === 'success' && (
-                    <div className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--success']}`}>
+                    <div aria-hidden="true" className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--success']}`}>
                         {t('securitytxt.success.update')}
                     </div>
                 )}
                 {saveStatus === 'error' && (
-                    <div className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--error']}`}>
+                    <div aria-hidden="true" className={`${styles.securitytxt_alert} ${styles['securitytxt_alert--error']}`}>
                         {t('securitytxt.errors.update.failed')}
                     </div>
                 )}
@@ -238,21 +259,26 @@ export function SecurityTxtSettings({siteKey}) {
                         <div>
                             <div className={styles.securitytxt_mode_toggle}>
                                 <Button
+                                    type="button"
                                     label={t('label.mode.internal')}
                                     variant={acknowledgmentsMode === 'node' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={acknowledgmentsMode === 'node'}
                                     onClick={() => setAcknowledgmentsMode('node')}
                                 />
                                 <Button
+                                    type="button"
                                     label={t('label.mode.external')}
                                     variant={acknowledgmentsMode === 'url' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={acknowledgmentsMode === 'url'}
                                     onClick={() => setAcknowledgmentsMode('url')}
                                 />
                             </div>
                             {acknowledgmentsMode === 'node' ? (
                                 <NodePicker
                                     label={t('label.acknowledgments')}
+                                    fieldId="securitytxt-acknowledgments"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
                                     resultKey="securityTxtPages"
@@ -287,21 +313,26 @@ export function SecurityTxtSettings({siteKey}) {
                         <div>
                             <div className={styles.securitytxt_mode_toggle}>
                                 <Button
+                                    type="button"
                                     label={t('label.mode.internal')}
                                     variant={encryptionMode === 'node' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={encryptionMode === 'node'}
                                     onClick={() => setEncryptionMode('node')}
                                 />
                                 <Button
+                                    type="button"
                                     label={t('label.mode.external')}
                                     variant={encryptionMode === 'url' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={encryptionMode === 'url'}
                                     onClick={() => setEncryptionMode('url')}
                                 />
                             </div>
                             {encryptionMode === 'node' ? (
                                 <NodePicker
                                     label={t('label.encryption')}
+                                    fieldId="securitytxt-encryption"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_FILES}
                                     resultKey="securityTxtFiles"
@@ -325,21 +356,26 @@ export function SecurityTxtSettings({siteKey}) {
                         <div>
                             <div className={styles.securitytxt_mode_toggle}>
                                 <Button
+                                    type="button"
                                     label={t('label.mode.internal')}
                                     variant={hiringMode === 'node' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={hiringMode === 'node'}
                                     onClick={() => setHiringMode('node')}
                                 />
                                 <Button
+                                    type="button"
                                     label={t('label.mode.external')}
                                     variant={hiringMode === 'url' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={hiringMode === 'url'}
                                     onClick={() => setHiringMode('url')}
                                 />
                             </div>
                             {hiringMode === 'node' ? (
                                 <NodePicker
                                     label={t('label.hiring')}
+                                    fieldId="securitytxt-hiring"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
                                     resultKey="securityTxtPages"
@@ -363,21 +399,26 @@ export function SecurityTxtSettings({siteKey}) {
                         <div>
                             <div className={styles.securitytxt_mode_toggle}>
                                 <Button
+                                    type="button"
                                     label={t('label.mode.internal')}
                                     variant={policyMode === 'node' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={policyMode === 'node'}
                                     onClick={() => setPolicyMode('node')}
                                 />
                                 <Button
+                                    type="button"
                                     label={t('label.mode.external')}
                                     variant={policyMode === 'url' ? 'primary' : 'secondary'}
                                     size="small"
+                                    aria-pressed={policyMode === 'url'}
                                     onClick={() => setPolicyMode('url')}
                                 />
                             </div>
                             {policyMode === 'node' ? (
                                 <NodePicker
                                     label={t('label.policy')}
+                                    fieldId="securitytxt-policy"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
                                     resultKey="securityTxtPages"
@@ -417,6 +458,7 @@ export function SecurityTxtSettings({siteKey}) {
                                 {OPTIONAL_FIELDS.filter(f => !visibleFields.has(f.key)).map(f => (
                                     <Button
                                         key={f.key}
+                                        type="button"
                                         label={`+ ${t(f.labelKey)}`}
                                         variant="ghost"
                                         size="small"
@@ -429,12 +471,14 @@ export function SecurityTxtSettings({siteKey}) {
 
                     <div className={styles.securitytxt_actions}>
                         <Button
+                            type="button"
                             label={saving ? t('label.saving') : t('label.update')}
                             variant="primary"
                             isDisabled={saving}
                             onClick={handleSubmit}
                         />
                         <Button
+                            type="button"
                             label={t('label.cancel')}
                             variant="secondary"
                             isDisabled={saving}
