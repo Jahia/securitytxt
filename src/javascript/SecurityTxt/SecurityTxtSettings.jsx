@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {useTranslation} from 'react-i18next';
 import {Button, Field, Input, Typography} from '@jahia/moonstone';
@@ -61,10 +61,10 @@ export function SecurityTxtSettings({siteKey}) {
     const [policyUrl, setPolicyUrl] = useState('');
     const [policyMode, setPolicyMode] = useState('node');
     const [preferredLanguages, setPreferredLanguages] = useState('');
-    const [saveStatus, setSaveStatus] = useState(null); // null | 'success' | 'error'
+    const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'success' | 'error' | 'cancel'
     const [visibleFields, setVisibleFields] = useState(new Set());
-
-    const statusRef = useRef(null);
+    const [contactError, setContactError] = useState('');
+    const [expiresError, setExpiresError] = useState('');
 
     const OPTIONAL_FIELDS = [
         {key: 'acknowledgments', labelKey: 'label.acknowledgments'},
@@ -74,6 +74,15 @@ export function SecurityTxtSettings({siteKey}) {
         {key: 'policy', labelKey: 'label.policy'},
         {key: 'preferredLanguages', labelKey: 'label.preferredLanguages'}
     ];
+
+    // M-07: update page title for SPA route — siteKey disambiguates multiple open tabs
+    useEffect(() => {
+        const prev = document.title;
+        document.title = `Security.txt — ${siteKey} — Jahia Administration`;
+        return () => {
+            document.title = prev;
+        };
+    }, [siteKey]);
 
     console.debug('%c security.txt: retrieving settings for %s', 'color: #463CBA', siteKey);
     const {data: settingsData, loading: settingsLoading, error: settingsError} = useQuery(
@@ -137,7 +146,32 @@ export function SecurityTxtSettings({siteKey}) {
     }, [settingsData]);
 
     const handleSubmit = async () => {
-        setSaveStatus(null);
+        let firstErrorId = null;
+        if (!contact.trim()) {
+            setContactError(t('securitytxt.errors.contact.required'));
+            if (!firstErrorId) {
+                firstErrorId = 'securitytxt-contact';
+            }
+        } else {
+            setContactError('');
+        }
+
+        if (!expires) {
+            setExpiresError(t('securitytxt.errors.expires.required'));
+            if (!firstErrorId) {
+                firstErrorId = 'securitytxt-expires';
+            }
+        } else {
+            setExpiresError('');
+        }
+
+        if (firstErrorId) {
+            document.getElementById(firstErrorId)?.focus();
+            return;
+        }
+
+        // 'saving' clears both live regions before the result lands, ensuring re-announcement on repeated saves
+        setSaveStatus('saving');
         try {
             const result = await updateSecurityTxt({
                 variables: {
@@ -165,8 +199,6 @@ export function SecurityTxtSettings({siteKey}) {
             console.error('Failed to update security.txt settings:', err);
             setSaveStatus('error');
         }
-
-        setTimeout(() => statusRef.current?.focus(), 50);
     };
 
     const handleCancel = () => {
@@ -174,11 +206,10 @@ export function SecurityTxtSettings({siteKey}) {
             syncFromSettings(settingsData.securityTxtSettings);
         }
 
-        setSaveStatus(null);
+        setContactError('');
+        setExpiresError('');
+        setSaveStatus('cancel');
     };
-
-    const srLiveMsg = saveStatus === 'success' ? t('securitytxt.success.update') :
-        saveStatus === 'error' ? t('securitytxt.errors.update.failed') : '';
 
     if (settingsLoading) {
         return <div className={styles.securitytxt_loading} role="status">{t('label.loading')}</div>;
@@ -194,16 +225,12 @@ export function SecurityTxtSettings({siteKey}) {
 
     return (
         <div>
-            {/* Persistent live region — always in DOM so AT registers it before content changes */}
-            <div
-                ref={statusRef}
-                tabIndex={-1}
-                role={saveStatus === 'error' ? 'alert' : 'status'}
-                aria-live={saveStatus === 'error' ? 'assertive' : 'polite'}
-                aria-atomic="true"
-                className={styles.securitytxt_sr_only}
-            >
-                {srLiveMsg}
+            {/* C-01: two fixed-role live regions always in DOM — AT registers roles at mount, never mutate role post-mount */}
+            <div role="status" aria-live="polite" aria-atomic="true" className={styles.securitytxt_sr_only}>
+                {saveStatus === 'success' ? t('securitytxt.success.update') : saveStatus === 'cancel' ? t('securitytxt.cancel') : ''}
+            </div>
+            <div role="alert" aria-live="assertive" aria-atomic="true" className={styles.securitytxt_sr_only}>
+                {saveStatus === 'error' ? t('securitytxt.errors.update.failed') : ''}
             </div>
 
             <div className={styles.securitytxt_page_header}>
@@ -240,9 +267,22 @@ export function SecurityTxtSettings({siteKey}) {
                         <Input
                             id="securitytxt-contact"
                             value={contact}
-                            onChange={e => setContact(e.target.value)}
+                            onChange={e => {
+                                setContact(e.target.value);
+                                setContactError('');
+                            }}
                             placeholder="mailto:security@example.com"
+                            required
+                            aria-required="true"
+                            aria-invalid={contactError ? 'true' : undefined}
+                            aria-describedby={contactError ? 'securitytxt-contact-error' : undefined}
+                            autoComplete="off"
                         />
+                        {contactError && (
+                            <span id="securitytxt-contact-error" className={styles.securitytxt_error_msg}>
+                                {contactError}
+                            </span>
+                        )}
                     </Field>
 
                     <Field label={t('label.expires')} id="securitytxt-expires">
@@ -251,13 +291,29 @@ export function SecurityTxtSettings({siteKey}) {
                             type="datetime-local"
                             className={styles.securitytxt_datetime_input}
                             value={expires}
-                            onChange={e => setExpires(e.target.value)}
+                            onChange={e => {
+                                setExpires(e.target.value);
+                                setExpiresError('');
+                            }}
+                            required
+                            aria-required="true"
+                            aria-invalid={expiresError ? 'true' : undefined}
+                            aria-describedby={expiresError ? 'securitytxt-expires-error' : undefined}
+                            autoComplete="off"
                         />
+                        {expiresError && (
+                            <span id="securitytxt-expires-error" className={styles.securitytxt_error_msg}>
+                                {expiresError}
+                            </span>
+                        )}
                     </Field>
 
                     {visibleFields.has('acknowledgments') && (
                         <div>
-                            <div className={styles.securitytxt_mode_toggle}>
+                            <span id="stxt-ack-mode-label" className={styles.securitytxt_mode_group_label}>
+                                {t('label.mode.groupFor', {field: t('label.acknowledgments')})}
+                            </span>
+                            <div role="group" aria-labelledby="stxt-ack-mode-label" className={styles.securitytxt_mode_toggle}>
                                 <Button
                                     type="button"
                                     label={t('label.mode.internal')}
@@ -292,6 +348,7 @@ export function SecurityTxtSettings({siteKey}) {
                                         value={acknowledgmentsUrl}
                                         onChange={e => setAcknowledgmentsUrl(e.target.value)}
                                         placeholder="https://example.com/security/acknowledgments"
+                                        autoComplete="url"
                                     />
                                 </Field>
                             )}
@@ -305,13 +362,17 @@ export function SecurityTxtSettings({siteKey}) {
                                 value={canonical}
                                 onChange={e => setCanonical(e.target.value)}
                                 placeholder="https://example.com/.well-known/security.txt"
+                                autoComplete="url"
                             />
                         </Field>
                     )}
 
                     {visibleFields.has('encryption') && (
                         <div>
-                            <div className={styles.securitytxt_mode_toggle}>
+                            <span id="stxt-enc-mode-label" className={styles.securitytxt_mode_group_label}>
+                                {t('label.mode.groupFor', {field: t('label.encryption')})}
+                            </span>
+                            <div role="group" aria-labelledby="stxt-enc-mode-label" className={styles.securitytxt_mode_toggle}>
                                 <Button
                                     type="button"
                                     label={t('label.mode.internal')}
@@ -346,6 +407,7 @@ export function SecurityTxtSettings({siteKey}) {
                                         value={encryptionUrl}
                                         onChange={e => setEncryptionUrl(e.target.value)}
                                         placeholder="https://example.com/pgp-key.txt"
+                                        autoComplete="url"
                                     />
                                 </Field>
                             )}
@@ -354,7 +416,10 @@ export function SecurityTxtSettings({siteKey}) {
 
                     {visibleFields.has('hiring') && (
                         <div>
-                            <div className={styles.securitytxt_mode_toggle}>
+                            <span id="stxt-hire-mode-label" className={styles.securitytxt_mode_group_label}>
+                                {t('label.mode.groupFor', {field: t('label.hiring')})}
+                            </span>
+                            <div role="group" aria-labelledby="stxt-hire-mode-label" className={styles.securitytxt_mode_toggle}>
                                 <Button
                                     type="button"
                                     label={t('label.mode.internal')}
@@ -389,6 +454,7 @@ export function SecurityTxtSettings({siteKey}) {
                                         value={hiringUrl}
                                         onChange={e => setHiringUrl(e.target.value)}
                                         placeholder="https://example.com/careers"
+                                        autoComplete="url"
                                     />
                                 </Field>
                             )}
@@ -397,7 +463,10 @@ export function SecurityTxtSettings({siteKey}) {
 
                     {visibleFields.has('policy') && (
                         <div>
-                            <div className={styles.securitytxt_mode_toggle}>
+                            <span id="stxt-policy-mode-label" className={styles.securitytxt_mode_group_label}>
+                                {t('label.mode.groupFor', {field: t('label.policy')})}
+                            </span>
+                            <div role="group" aria-labelledby="stxt-policy-mode-label" className={styles.securitytxt_mode_toggle}>
                                 <Button
                                     type="button"
                                     label={t('label.mode.internal')}
@@ -432,6 +501,7 @@ export function SecurityTxtSettings({siteKey}) {
                                         value={policyUrl}
                                         onChange={e => setPolicyUrl(e.target.value)}
                                         placeholder="https://example.com/security/policy"
+                                        autoComplete="url"
                                     />
                                 </Field>
                             )}
@@ -445,6 +515,7 @@ export function SecurityTxtSettings({siteKey}) {
                                 value={preferredLanguages}
                                 onChange={e => setPreferredLanguages(e.target.value)}
                                 placeholder="en, fr"
+                                autoComplete="off"
                             />
                         </Field>
                     )}

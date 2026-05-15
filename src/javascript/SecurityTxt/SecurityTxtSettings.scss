@@ -17,6 +17,12 @@
   padding: var(--spacing-large, 24px);
 }
 
+// M-03: module-level focus-visible safety net — activates only if a child has no outline of its own
+.securitytxt_container *:focus-visible {
+  outline: 2px solid var(--color-accent, #00a0e3);
+  outline-offset: 2px;
+}
+
 .securitytxt_loading,
 .securitytxt_error {
   font-family: 'Nunito Sans', sans-serif;
@@ -37,7 +43,7 @@
 
   p {
     margin: 0 0 var(--spacing-small, 8px);
-    font-size: 13px;
+    font-size: 0.8125rem; // M-04: 13px → rem
     line-height: 1.5;
     color: #5c6370;
 
@@ -56,7 +62,7 @@
   }
 
   code {
-    font-size: 12px;
+    font-size: 0.75rem; // M-04: 12px → rem
     padding: 2px var(--spacing-small, 8px);
     background: var(--color-gray_light, #dadada);
     border-radius: var(--radius_small, 2px);
@@ -67,7 +73,7 @@
 .securitytxt_alert {
   padding: var(--spacing-small, 8px) var(--spacing-medium, 16px);
   border-radius: var(--radius, 4px);
-  font-size: 13px;
+  font-size: 0.8125rem; // M-04: 13px → rem
   margin-bottom: var(--spacing-medium, 16px);
   border: 1px solid transparent;
 
@@ -96,10 +102,10 @@
   height: 32px;
   padding: 0 var(--spacing-small, 8px);
   font-family: 'Nunito Sans', sans-serif;
-  font-size: 14px;
+  font-size: 0.875rem; // M-04: 14px → rem
   color: var(--color-dark, #131c21);
   background: var(--color-light, #fdfdfd);
-  border: 1px solid var(--color-gray_dark, #b2b5ba);
+  border: 1px solid #767676; // M-02 + N-03: #b2b5ba (1.99:1) → #767676 (3.93:1) for SC 1.4.11
   border-radius: var(--radius_small, 2px);
 
   &:focus,
@@ -110,10 +116,37 @@
   }
 }
 
+.securitytxt_error_msg {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-danger_dark, #840d0f);
+}
+
+.securitytxt_mode_group_label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-dark, #131c21);
+  margin-bottom: 0.25rem;
+}
+
 .securitytxt_mode_toggle {
   display: flex;
   gap: var(--spacing-small, 8px);
   margin-bottom: var(--spacing-small, 8px);
+}
+
+.securitytxt_picker_field {
+  margin-top: var(--spacing-small, 8px);
+}
+
+.securitytxt_picker_label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-dark, #131c21);
+  margin-bottom: 0.25rem;
 }
 
 .securitytxt_add_fields {
@@ -125,7 +158,7 @@
   display: block;
   margin-bottom: var(--spacing-small, 8px);
   color: #5c6370;
-  font-size: 12px;
+  font-size: 0.75rem; // M-04: 12px → rem
 }
 
 .securitytxt_add_fields_buttons {
@@ -140,14 +173,21 @@
   margin-top: var(--spacing-small, 8px);
 }
 
-.securitytxt_page_header h2 {
-  margin: 0;
-  padding: 0;
-  margin-left: 25px;
-  font-size: 25px;
-  line-height: 85px;
-  width: 80%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+// M-04: replaced line-height layout hack with flex — line-height trick clips text at 200% zoom (SC 1.4.4)
+.securitytxt_page_header {
+  display: flex;
+  align-items: center;
+  height: 5.3125rem; // 85px → rem
+
+  h2 {
+    margin: 0;
+    padding: 0;
+    margin-left: 1.5625rem; // 25px → rem
+    font-size: 1.5625rem; // 25px → rem
+    line-height: 1.2; // unitless — scales proportionally with font-size at any zoom level
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

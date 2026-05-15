@@ -12,7 +12,8 @@
     "addField": "Add optional field",
     "mode": {
       "internal": "Internal",
-      "external": "External URL"
+      "external": "External URL",
+      "groupFor": "Source for {{field}}"
     },
     "update": "Save",
     "cancel": "Cancel",
@@ -27,6 +28,7 @@
   },
   "securitytxt": {
     "description": "Please refer to this website for more information about the file security.txt:",
+    "cancel": "Changes discarded.",
     "signature": {
       "hint": "Once the file is ready, you can create the signature with the command"
     },
@@ -39,6 +41,12 @@
       },
       "load": {
         "failed": "Failed to load security.txt settings"
+      },
+      "contact": {
+        "required": "Security contact address is required."
+      },
+      "expires": {
+        "required": "Expiry date is required."
       }
     }
   }
