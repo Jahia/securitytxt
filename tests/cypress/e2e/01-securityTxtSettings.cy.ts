@@ -51,6 +51,7 @@ describe('Security.txt Settings', () => {
         cy.visit(adminPath);
 
         cy.get('#securitytxt-contact input').type('mailto:security@example.com');
+        cy.get('#securitytxt-expires').type('2027-12-31T23:59:59');
 
         cy.contains('button', '+ Canonical URL').click();
         cy.get('#securitytxt-canonical input').type('https://example.com/.well-known/security.txt');
