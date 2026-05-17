@@ -60,7 +60,7 @@ yarn install
 ./ci.build.sh && ./ci.startup.sh
 ```
 
-- Tests: `tests/cypress/e2e/01-securitytxt.cy.ts`
+- Tests: `tests/cypress/e2e/01-securityTxtSettings.cy.ts`
 - Admin path: `/jahia/administration/{siteKey}/securitytxt`
 - Tests cover: read settings, save settings (all fields), clear fields, `/.well-known/security.txt` HTTP response
 
