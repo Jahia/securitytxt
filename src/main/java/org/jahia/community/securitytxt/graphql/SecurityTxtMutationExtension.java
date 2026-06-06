@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
+import java.util.regex.Pattern;
 
 @GraphQLTypeExtension(DXGraphQLProvider.Mutation.class)
 @GraphQLName("SecurityTxtMutations")
@@ -26,6 +27,15 @@ public class SecurityTxtMutationExtension {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtMutationExtension.class);
     private static final String SECURITY_TXT = "securitytxt";
     private static final String SECURITY_TXT_NODE_TYPE = "jnt:securitytxt";
+
+    /** Matches a mailto: or https: URI for the Contact field (RFC 9116). */
+    private static final Pattern CONTACT_PATTERN =
+            Pattern.compile("^(mailto:[^\\s]+|https://[^\\s]+)$");
+    /** Matches an https: or mailto: URI for URL fields. */
+    private static final Pattern URL_FIELD_PATTERN =
+            Pattern.compile("^(https://[^\\s]+|mailto:[^\\s]+)$");
+    /** CR or LF characters that must never appear in a field value. */
+    private static final Pattern CRLF_PATTERN = Pattern.compile("[\\r\\n]");
 
     @SuppressWarnings("java:S107")
     @GraphQLField
@@ -58,6 +68,9 @@ public class SecurityTxtMutationExtension {
                     if (!callerSession.nodeExists(sitePath) || !callerSession.getNode(sitePath).hasPermission("siteAdminSecurityTxt")) {
                         throw new AccessDeniedException("siteAdminSecurityTxt");
                     }
+                    // Validate all user-supplied string fields before touching the repository.
+                    validateFields(contact, canonical, acknowledgmentsUrl, encryptionUrl, hiringUrl, policyUrl, preferredLanguages);
+
                     final JCRNodeWrapper siteNode = session.getNode(sitePath);
 
                     final JCRNodeWrapper node;
@@ -94,6 +107,57 @@ public class SecurityTxtMutationExtension {
         } catch (RepositoryException e) {
             LOGGER.error("Error updating security.txt settings for site {}", siteKey, e);
             return null;
+        }
+    }
+
+    /**
+     * Validates all user-controlled string fields before they are stored in the JCR.
+     * <ul>
+     *   <li>Rejects any value containing CR or LF (newline injection / response splitting).</li>
+     *   <li>Requires {@code contact} to be a {@code mailto:} or {@code https:} URI.</li>
+     *   <li>Requires URL fields to be {@code https:} or {@code mailto:} URIs when non-blank.</li>
+     * </ul>
+     *
+     * @throws RepositoryException with a descriptive message when a field is invalid.
+     */
+    @SuppressWarnings("java:S107")
+    private static void validateFields(String contact, String canonical,
+                                       String acknowledgmentsUrl, String encryptionUrl,
+                                       String hiringUrl, String policyUrl,
+                                       String preferredLanguages) throws RepositoryException {
+        // --- CR/LF check on every field ---
+        rejectCrlf("contact", contact);
+        rejectCrlf("canonical", canonical);
+        rejectCrlf("acknowledgmentsUrl", acknowledgmentsUrl);
+        rejectCrlf("encryptionUrl", encryptionUrl);
+        rejectCrlf("hiringUrl", hiringUrl);
+        rejectCrlf("policyUrl", policyUrl);
+        rejectCrlf("preferredLanguages", preferredLanguages);
+
+        // --- URI scheme validation ---
+        if (StringUtils.isNotBlank(contact) && !CONTACT_PATTERN.matcher(contact.trim()).matches()) {
+            throw new RepositoryException(
+                    "Invalid contact value: must be a mailto: or https: URI");
+        }
+
+        validateUrlField("canonical", canonical);
+        validateUrlField("acknowledgmentsUrl", acknowledgmentsUrl);
+        validateUrlField("encryptionUrl", encryptionUrl);
+        validateUrlField("hiringUrl", hiringUrl);
+        validateUrlField("policyUrl", policyUrl);
+    }
+
+    private static void rejectCrlf(String fieldName, String value) throws RepositoryException {
+        if (value != null && CRLF_PATTERN.matcher(value).find()) {
+            throw new RepositoryException(
+                    "Invalid value for field '" + fieldName + "': CR/LF characters are not allowed");
+        }
+    }
+
+    private static void validateUrlField(String fieldName, String value) throws RepositoryException {
+        if (StringUtils.isNotBlank(value) && !URL_FIELD_PATTERN.matcher(value.trim()).matches()) {
+            throw new RepositoryException(
+                    "Invalid value for field '" + fieldName + "': must be an https: or mailto: URI");
         }
     }
 
