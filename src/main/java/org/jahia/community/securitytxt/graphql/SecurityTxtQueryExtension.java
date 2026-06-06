@@ -31,6 +31,9 @@ public class SecurityTxtQueryExtension {
     public static GqlSecurityTxt getSecurityTxtSettings(
             @GraphQLName("siteKey") @GraphQLNonNull final String siteKey) {
         try {
+            if (siteKey == null || !siteKey.matches("[\\w\\-\\.]+")) {
+                throw new RepositoryException("Invalid siteKey: " + siteKey);
+            }
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<GqlSecurityTxt>() {
                 @Override
                 public GqlSecurityTxt doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -64,6 +67,9 @@ public class SecurityTxtQueryExtension {
                     );
                 }
             });
+        } catch (AccessDeniedException e) {
+            LOGGER.warn("Access denied getting security.txt settings for site {}: {}", siteKey, e.getMessage());
+            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting security.txt settings for site {}", siteKey, e);
             return null;
@@ -83,6 +89,9 @@ public class SecurityTxtQueryExtension {
                     return getSiteItems(session, siteKey, "files", "jnt:file", searchTerm);
                 }
             });
+        } catch (AccessDeniedException e) {
+            LOGGER.warn("Access denied getting files for site {}: {}", siteKey, e.getMessage());
+            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting files for site {}", siteKey, e);
             return Collections.emptyList();
@@ -102,6 +111,9 @@ public class SecurityTxtQueryExtension {
                     return getSiteItems(session, siteKey, "home", "jnt:page", searchTerm);
                 }
             });
+        } catch (AccessDeniedException e) {
+            LOGGER.warn("Access denied getting pages for site {}: {}", siteKey, e.getMessage());
+            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting pages for site {}", siteKey, e);
             return Collections.emptyList();
@@ -110,6 +122,10 @@ public class SecurityTxtQueryExtension {
 
     private static List<GqlFileItem> getSiteItems(JCRSessionWrapper session, String siteKey,
                                                   String relPath, String nodeType, String searchTerm) throws RepositoryException {
+        // Sanitize siteKey to prevent path traversal: allow only word chars, hyphens, and dots.
+        if (siteKey == null || !siteKey.matches("[\\w\\-\\.]+")) {
+            throw new RepositoryException("Invalid siteKey: " + siteKey);
+        }
         final List<GqlFileItem> items = new ArrayList<>();
         final String sitePath = "/sites/" + siteKey;
         if (!session.nodeExists(sitePath)) {
@@ -137,8 +153,15 @@ public class SecurityTxtQueryExtension {
             }
 
             if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                // Escape single quotes for JCR-SQL2 string literal, then escape LIKE wildcards
+                // so user input cannot expand to arbitrary patterns.
+                final String escaped = searchTerm.trim()
+                        .replace("'", "''")
+                        .replace("\\", "\\\\")
+                        .replace("%", "\\%")
+                        .replace("_", "\\_");
                 filter.append(" and localname(f) like '%")
-                        .append(searchTerm.trim().replace("'", "''"))
+                        .append(escaped)
                         .append("%'");
             }
 
