@@ -84,7 +84,6 @@ export function SecurityTxtSettings({siteKey}) {
         };
     }, [siteKey]);
 
-    console.debug('%c security.txt: retrieving settings for %s', 'color: #463CBA', siteKey);
     const {data: settingsData, loading: settingsLoading, error: settingsError} = useQuery(
         GET_SECURITY_TXT_SETTINGS,
         {variables: {siteKey}, fetchPolicy: 'network-only'}
