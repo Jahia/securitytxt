@@ -27,6 +27,11 @@ public class SecurityTxtMutationExtension {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityTxtMutationExtension.class);
     private static final String SECURITY_TXT = "securitytxt";
     private static final String SECURITY_TXT_NODE_TYPE = "jnt:securitytxt";
+    private static final String FIELD_ACKNOWLEDGMENTS_URL = "acknowledgmentsUrl";
+    private static final String FIELD_CANONICAL = "canonical";
+    private static final String FIELD_ENCRYPTION_URL = "encryptionUrl";
+    private static final String FIELD_HIRING_URL = "hiringUrl";
+    private static final String FIELD_POLICY_URL = "policyUrl";
 
     @SuppressWarnings("java:S107")
     @GraphQLField
@@ -74,14 +79,14 @@ public class SecurityTxtMutationExtension {
                     setStringProp(node, "contact", contact);
                     setStringProp(node, "expires", expires);
                     setRefProp(session, node, "acknowledgments", acknowledgments);
-                    setStringProp(node, "acknowledgmentsUrl", acknowledgmentsUrl);
-                    setStringProp(node, "canonical", canonical);
+                    setStringProp(node, FIELD_ACKNOWLEDGMENTS_URL, acknowledgmentsUrl);
+                    setStringProp(node, FIELD_CANONICAL, canonical);
                     setRefProp(session, node, "encryption", encryption);
-                    setStringProp(node, "encryptionUrl", encryptionUrl);
+                    setStringProp(node, FIELD_ENCRYPTION_URL, encryptionUrl);
                     setRefProp(session, node, "hiring", hiring);
-                    setStringProp(node, "hiringUrl", hiringUrl);
+                    setStringProp(node, FIELD_HIRING_URL, hiringUrl);
                     setRefProp(session, node, "policy", policy);
-                    setStringProp(node, "policyUrl", policyUrl);
+                    setStringProp(node, FIELD_POLICY_URL, policyUrl);
                     setStringProp(node, "preferredLanguages", preferredLanguages);
 
                     session.save();
@@ -119,20 +124,20 @@ public class SecurityTxtMutationExtension {
         try {
             // --- CR/LF check on every field ---
             SecurityTxtFieldValidator.requireFreeOfCrlf("contact", contact);
-            SecurityTxtFieldValidator.requireFreeOfCrlf("canonical", canonical);
-            SecurityTxtFieldValidator.requireFreeOfCrlf("acknowledgmentsUrl", acknowledgmentsUrl);
-            SecurityTxtFieldValidator.requireFreeOfCrlf("encryptionUrl", encryptionUrl);
-            SecurityTxtFieldValidator.requireFreeOfCrlf("hiringUrl", hiringUrl);
-            SecurityTxtFieldValidator.requireFreeOfCrlf("policyUrl", policyUrl);
+            SecurityTxtFieldValidator.requireFreeOfCrlf(FIELD_CANONICAL, canonical);
+            SecurityTxtFieldValidator.requireFreeOfCrlf(FIELD_ACKNOWLEDGMENTS_URL, acknowledgmentsUrl);
+            SecurityTxtFieldValidator.requireFreeOfCrlf(FIELD_ENCRYPTION_URL, encryptionUrl);
+            SecurityTxtFieldValidator.requireFreeOfCrlf(FIELD_HIRING_URL, hiringUrl);
+            SecurityTxtFieldValidator.requireFreeOfCrlf(FIELD_POLICY_URL, policyUrl);
             SecurityTxtFieldValidator.requireFreeOfCrlf("preferredLanguages", preferredLanguages);
 
             // --- URI scheme validation ---
             SecurityTxtFieldValidator.requireValidContact(contact);
-            SecurityTxtFieldValidator.requireValidUrlField("canonical", canonical);
-            SecurityTxtFieldValidator.requireValidUrlField("acknowledgmentsUrl", acknowledgmentsUrl);
-            SecurityTxtFieldValidator.requireValidUrlField("encryptionUrl", encryptionUrl);
-            SecurityTxtFieldValidator.requireValidUrlField("hiringUrl", hiringUrl);
-            SecurityTxtFieldValidator.requireValidUrlField("policyUrl", policyUrl);
+            SecurityTxtFieldValidator.requireValidUrlField(FIELD_CANONICAL, canonical);
+            SecurityTxtFieldValidator.requireValidUrlField(FIELD_ACKNOWLEDGMENTS_URL, acknowledgmentsUrl);
+            SecurityTxtFieldValidator.requireValidUrlField(FIELD_ENCRYPTION_URL, encryptionUrl);
+            SecurityTxtFieldValidator.requireValidUrlField(FIELD_HIRING_URL, hiringUrl);
+            SecurityTxtFieldValidator.requireValidUrlField(FIELD_POLICY_URL, policyUrl);
         } catch (IllegalArgumentException e) {
             // Preserve the existing failure path: invalid input aborts the mutation.
             throw new RepositoryException(e.getMessage(), e);
