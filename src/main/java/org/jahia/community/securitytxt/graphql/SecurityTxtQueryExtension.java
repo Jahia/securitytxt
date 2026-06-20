@@ -69,7 +69,7 @@ public class SecurityTxtQueryExtension {
             });
         } catch (AccessDeniedException e) {
             LOGGER.warn("Access denied getting security.txt settings for site {}: {}", siteKey, e.getMessage());
-            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
+            throw new SecurityTxtAccessDeniedException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting security.txt settings for site {}", siteKey, e);
             return null;
@@ -91,7 +91,7 @@ public class SecurityTxtQueryExtension {
             });
         } catch (AccessDeniedException e) {
             LOGGER.warn("Access denied getting files for site {}: {}", siteKey, e.getMessage());
-            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
+            throw new SecurityTxtAccessDeniedException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting files for site {}", siteKey, e);
             return Collections.emptyList();
@@ -113,7 +113,7 @@ public class SecurityTxtQueryExtension {
             });
         } catch (AccessDeniedException e) {
             LOGGER.warn("Access denied getting pages for site {}: {}", siteKey, e.getMessage());
-            throw new RuntimeException("Access denied: siteAdminSecurityTxt permission required");
+            throw new SecurityTxtAccessDeniedException("Access denied: siteAdminSecurityTxt permission required");
         } catch (RepositoryException e) {
             LOGGER.error("Error getting pages for site {}", siteKey, e);
             return Collections.emptyList();
