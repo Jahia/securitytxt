@@ -22,7 +22,7 @@ export function NodePicker({label, fieldId, siteKey, query, resultKey, value, on
     });
 
     // Build dropdown data from search results, ensuring the current value is always present
-    const searchItems = (data && data[resultKey]) || [];
+    const searchItems = (data && data.securityTxt && data.securityTxt[resultKey]) || [];
     const dropdownData = searchItems.map(item => ({label: item.displayName, value: item.uuid}));
 
     const valueInResults = dropdownData.some(item => item.value === value);

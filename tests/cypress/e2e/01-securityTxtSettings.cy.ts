@@ -65,7 +65,7 @@ describe('Security.txt Settings', () => {
 
         // Verify persistence via GraphQL
         cy.apollo({query: getSecurityTxtSettings, variables: {siteKey}})
-            .its('data.securityTxtSettings')
+            .its('data.securityTxt.settings')
             .should((settings: Record<string, string>) => {
                 expect(settings.contact).to.equal('mailto:security@example.com');
                 expect(settings.canonical).to.equal('https://example.com/.well-known/security.txt');
@@ -87,7 +87,7 @@ describe('Security.txt Settings', () => {
 
         // Verify the stored value is in RFC 3339 format: YYYY-MM-DDTHH:MM:SS.mss±HH:MM
         cy.apollo({query: getSecurityTxtSettings, variables: {siteKey}})
-            .its('data.securityTxtSettings.expires')
+            .its('data.securityTxt.settings.expires')
             .should('match', /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?([+-]\d{2}:\d{2}|Z)$/);
         cy.request('http://jahia:8080' + securityPath);
     });
@@ -139,15 +139,15 @@ describe('Security.txt Settings', () => {
                 hiring: null,
                 policy: null
             }
-        }).then((result: { data: { updateSecurityTxt: Record<string, string> } }) => {
-            const s = result.data.updateSecurityTxt;
+        }).then((result: { data: { securityTxt: { update: Record<string, string> } } }) => {
+            const s = result.data.securityTxt.update;
             expect(s.contact).to.equal('mailto:api@example.com');
             expect(s.canonical).to.equal('https://api.example.com/.well-known/security.txt');
             expect(s.preferredLanguages).to.equal('en');
         });
 
         cy.apollo({query: getSecurityTxtSettings, variables: {siteKey}})
-            .its('data.securityTxtSettings')
+            .its('data.securityTxt.settings')
             .should((settings: Record<string, string>) => {
                 expect(settings.contact).to.equal('mailto:api@example.com');
                 expect(settings.canonical).to.equal('https://api.example.com/.well-known/security.txt');
@@ -182,7 +182,7 @@ describe('Security.txt Settings', () => {
         cy.contains('Security.txt settings saved successfully.').should('be.visible');
 
         cy.apollo({query: getSecurityTxtSettings, variables: {siteKey}})
-            .its('data.securityTxtSettings.canonical')
+            .its('data.securityTxt.settings.canonical')
             .should('be.null');
     });
 

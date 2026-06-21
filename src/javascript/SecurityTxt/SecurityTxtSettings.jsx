@@ -139,8 +139,8 @@ export function SecurityTxtSettings({siteKey}) {
     };
 
     useEffect(() => {
-        if (settingsData && settingsData.securityTxtSettings) {
-            syncFromSettings(settingsData.securityTxtSettings);
+        if (settingsData && settingsData.securityTxt && settingsData.securityTxt.settings) {
+            syncFromSettings(settingsData.securityTxt.settings);
         }
     }, [settingsData]);
 
@@ -189,7 +189,7 @@ export function SecurityTxtSettings({siteKey}) {
                     preferredLanguages: preferredLanguages || null
                 }
             });
-            if (result.data && result.data.updateSecurityTxt) {
+            if (result.data && result.data.securityTxt && result.data.securityTxt.update) {
                 setSaveStatus('success');
             } else {
                 setSaveStatus('error');
@@ -201,8 +201,8 @@ export function SecurityTxtSettings({siteKey}) {
     };
 
     const handleCancel = () => {
-        if (settingsData && settingsData.securityTxtSettings) {
-            syncFromSettings(settingsData.securityTxtSettings);
+        if (settingsData && settingsData.securityTxt && settingsData.securityTxt.settings) {
+            syncFromSettings(settingsData.securityTxt.settings);
         }
 
         setContactError('');
@@ -336,7 +336,7 @@ export function SecurityTxtSettings({siteKey}) {
                                     fieldId="securitytxt-acknowledgments"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
-                                    resultKey="securityTxtPages"
+                                    resultKey="pages"
                                     value={acknowledgments}
                                     onChange={setAcknowledgments}
                                 />
@@ -395,7 +395,7 @@ export function SecurityTxtSettings({siteKey}) {
                                     fieldId="securitytxt-encryption"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_FILES}
-                                    resultKey="securityTxtFiles"
+                                    resultKey="files"
                                     value={encryption}
                                     onChange={setEncryption}
                                 />
@@ -442,7 +442,7 @@ export function SecurityTxtSettings({siteKey}) {
                                     fieldId="securitytxt-hiring"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
-                                    resultKey="securityTxtPages"
+                                    resultKey="pages"
                                     value={hiring}
                                     onChange={setHiring}
                                 />
@@ -489,7 +489,7 @@ export function SecurityTxtSettings({siteKey}) {
                                     fieldId="securitytxt-policy"
                                     siteKey={siteKey}
                                     query={GET_SECURITY_TXT_PAGES}
-                                    resultKey="securityTxtPages"
+                                    resultKey="pages"
                                     value={policy}
                                     onChange={setPolicy}
                                 />

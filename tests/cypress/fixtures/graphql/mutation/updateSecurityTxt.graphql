@@ -9,25 +9,27 @@ mutation UpdateSecurityTxt(
     $policy: String
     $preferredLanguages: String
 ) {
-    updateSecurityTxt(
-        siteKey: $siteKey
-        contact: $contact
-        expires: $expires
-        acknowledgments: $acknowledgments
-        canonical: $canonical
-        encryption: $encryption
-        hiring: $hiring
-        policy: $policy
-        preferredLanguages: $preferredLanguages
-    ) {
-        siteKey
-        contact
-        expires
-        acknowledgments
-        canonical
-        encryption
-        hiring
-        policy
-        preferredLanguages
+    securityTxt {
+        update(
+            siteKey: $siteKey
+            contact: $contact
+            expires: $expires
+            acknowledgments: $acknowledgments
+            canonical: $canonical
+            encryption: $encryption
+            hiring: $hiring
+            policy: $policy
+            preferredLanguages: $preferredLanguages
+        ) {
+            siteKey
+            contact
+            expires
+            acknowledgments
+            canonical
+            encryption
+            hiring
+            policy
+            preferredLanguages
+        }
     }
 }
