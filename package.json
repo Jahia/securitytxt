@@ -61,7 +61,8 @@
     "js-yaml": "^4.1.1",
     "node-fetch": "^2.6.7",
     "normalize-package-data": "^7.0.0",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "node-gyp": "^12.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
