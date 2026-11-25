@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.jahia.community</groupId>
     <artifactId>securitytxt</artifactId>
-    <version>2.0.5</version>
+    <version>2.0.6-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <name>security.txt</name>
     <description>The purpose of this module is to ease the generation of the file security.txt inside Digital Experience Manager. For more information about security.txt, please refer to this URL: https://securitytxt.org/</description>
